@@ -1,16 +1,23 @@
+
 {
   "placeholderImages": [
     {
       "id": "hero-bg",
       "description": "Secure network visualization",
-      "imageUrl": "https://picsum.photos/seed/torvpn-hero/1200/800",
+      "imageUrl": "https://picsum.photos/seed/torvpn-prod-1/1200/800",
       "imageHint": "network security"
     },
     {
       "id": "server-map",
       "description": "Global server locations",
-      "imageUrl": "https://picsum.photos/seed/torvpn-map/800/600",
+      "imageUrl": "https://picsum.photos/seed/torvpn-prod-2/800/600",
       "imageHint": "world map"
+    },
+    {
+      "id": "app-icon",
+      "description": "App Icon Placeholder",
+      "imageUrl": "https://picsum.photos/seed/torvpn-prod-3/512/512",
+      "imageHint": "shield icon"
     }
   ]
 }

@@ -5,26 +5,26 @@
 
 @layer base {
   :root {
-    --background: 222 60% 10%;
+    --background: 222 60% 5%;
     --foreground: 210 40% 98%;
-    --card: 222 47% 11%;
+    --card: 222 47% 8%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 47% 11%;
+    --popover: 222 47% 8%;
     --popover-foreground: 210 40% 98%;
-    --primary: 220 70% 45%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217 32% 17%;
+    --primary: 190 80% 50%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217 32% 12%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 190 80% 60%;
+    --muted: 217 32% 12%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 190 90% 60%;
     --accent-foreground: 222 47% 11%;
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
-    --ring: 224 76% 48%;
-    --radius: 0.75rem;
+    --border: 217 32% 15%;
+    --input: 217 32% 15%;
+    --ring: 190 80% 50%;
+    --radius: 1rem;
   }
 }
 
@@ -33,37 +33,43 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    @apply bg-background text-foreground font-body antialiased selection:bg-accent/30;
     overscroll-behavior-y: none;
-    /* Verhindert Textmarkierung für ein nativeres Gefühl */
     -webkit-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-headline tracking-tight;
-  }
-  code, pre {
-    @apply font-code;
+    @apply font-headline tracking-tight font-bold;
   }
 }
 
-/* Safe Area Insets für moderne Smartphones */
 .safe-top {
-  padding-top: env(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-.glass {
-  background: rgba(10, 20, 41, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.glass-panel {
+  background: linear-gradient(135deg, rgba(10, 20, 41, 0.7) 0%, rgba(10, 20, 41, 0.4) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.neon-glow {
-  box-shadow: 0 0 15px rgba(71, 208, 235, 0.3);
+.neon-border {
+  box-shadow: 0 0 20px rgba(71, 208, 235, 0.15);
+  border-color: rgba(71, 208, 235, 0.3);
+}
+
+.pulse-primary {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.05); }
 }
 
 ::-webkit-scrollbar {
