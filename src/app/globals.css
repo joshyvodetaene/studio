@@ -33,12 +33,21 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
+    /* Prevent pull-to-refresh and system overscroll */
+    overscroll-behavior-y: none;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tight;
   }
   code, pre {
     @apply font-code;
+  }
+}
+
+/* Standalone (PWA) adjustments */
+@media (display-mode: standalone) {
+  header {
+    padding-top: env(safe-area-inset-top);
   }
 }
 
@@ -50,4 +59,9 @@
 
 .neon-glow {
   box-shadow: 0 0 15px rgba(71, 208, 235, 0.3);
+}
+
+/* Hide scrollbars for a cleaner app look */
+::-webkit-scrollbar {
+  display: none;
 }
