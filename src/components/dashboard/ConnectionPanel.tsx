@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Shield, Power, Activity, Lock, Zap, ArrowDown, ArrowUp, Loader2 } from "lucide-react";
+import { Shield, Power, Activity, Lock, Zap, ArrowDown, ArrowUp, Loader2, Network } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VpnServer } from "@/lib/server-data";
 
@@ -17,7 +17,7 @@ interface ConnectionPanelProps {
 
 export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPanelProps) {
   const [status, setStatus] = useState<"disconnected" | "connecting" | "connected">("disconnected");
-  const [torMode, setTorMode] = useState(true);
+  const [fullTunnel, setFullTunnel] = useState(true);
   const [killSwitch, setKillSwitch] = useState(true);
   const [progress, setProgress] = useState(0);
   const [downlink, setDownlink] = useState(0);
@@ -75,12 +75,12 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
         <CardTitle className="text-xl font-bold flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className={cn("w-5 h-5 transition-colors", status === "connected" ? "text-accent" : "text-muted-foreground")} />
-            Pro-Performance Tunnel
+            Torro Backbone
           </div>
           {status === "connected" && (
             <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20">
-              <Zap className="w-3 h-3 text-accent fill-accent" />
-              <span className="text-[10px] text-accent uppercase font-black tracking-tighter italic">Turbo Active</span>
+              <Network className="w-3 h-3 text-accent" />
+              <span className="text-[10px] text-accent uppercase font-black tracking-tighter italic">Full Device Guard</span>
             </div>
           )}
         </CardTitle>
@@ -106,27 +106,6 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
                 <Power className={cn("w-20 h-20 transition-transform duration-500", status === "connected" && "rotate-180")} />
               )}
             </div>
-            
-            {status === "connecting" && (
-              <svg className="absolute inset-0 w-full h-full -rotate-90">
-                <circle
-                  cx="80" cy="80" r="74"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="6"
-                  className="text-accent/10"
-                />
-                <circle
-                  cx="80" cy="80" r="74"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="6"
-                  strokeDasharray="465"
-                  strokeDashoffset={465 - (465 * progress) / 100}
-                  className="text-accent transition-all duration-100"
-                />
-              </svg>
-            )}
           </div>
           
           <div className="text-center mt-6 h-16">
@@ -134,41 +113,40 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
               "text-3xl font-black tracking-tighter uppercase italic",
               status === "connected" ? "text-accent" : status === "connecting" ? "text-accent/80" : "text-muted-foreground"
             )}>
-              {status === "connected" ? "Connected" : status === "connecting" ? "Optimizing..." : "Standby"}
+              {status === "connected" ? "Protected" : status === "connecting" ? "Shielding..." : "Ready"}
             </h2>
             <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.3em] mt-1">
-              {status === "connected" ? `Backbone: ${selectedServer?.city}` : status === "connecting" ? "Bypassing Congestion" : "Select Node for 10Gbps Uplink"}
+              {status === "connected" ? `Active Node: ${selectedServer?.city}` : status === "connecting" ? "Syncing Handshake" : "Press to Encrypt Entire Device"}
             </p>
           </div>
         </div>
 
         <div className="grid gap-3">
-          <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 transition-colors hover:bg-white/10">
+          <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
-                <Zap className="w-4 h-4 fill-accent" />
+                <Shield className="w-4 h-4" />
               </div>
               <div>
-                <Label htmlFor="tor-mode" className="text-sm font-black block italic">Turbine Mode</Label>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">Maximum Bandwidth Aggregation</p>
+                <Label htmlFor="full-tunnel" className="text-sm font-black block italic uppercase">Full Device Guard</Label>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">Route 100% of device traffic</p>
               </div>
             </div>
             <Switch 
-              id="tor-mode" 
-              checked={torMode} 
-              onCheckedChange={setTorMode}
-              disabled={status !== "disconnected"}
+              id="full-tunnel" 
+              checked={fullTunnel} 
+              onCheckedChange={setFullTunnel}
             />
           </div>
 
-          <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 transition-colors hover:bg-white/10">
+          <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center text-destructive">
                 <Lock className="w-4 h-4" />
               </div>
               <div>
-                <Label htmlFor="kill-switch" className="text-sm font-black block">Quantum Lock</Label>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">Zero-Leak Buffer Architecture</p>
+                <Label htmlFor="kill-switch" className="text-sm font-black block uppercase italic">Quantum Lock</Label>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">Instant Block on Handshake loss</p>
               </div>
             </div>
             <Switch id="kill-switch" checked={killSwitch} onCheckedChange={setKillSwitch} />
@@ -180,16 +158,16 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
             <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 group">
               <div className="flex items-center gap-2 mb-1">
                 <ArrowDown className="w-4 h-4 text-accent animate-bounce" />
-                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Downlink</p>
+                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Download</p>
               </div>
-              <p className="font-code text-2xl font-black text-foreground">{downlink} <span className="text-[10px] text-muted-foreground font-normal">Mbps</span></p>
+              <p className="font-code text-2xl font-black text-foreground">{downlink} <span className="text-[10px] text-muted-foreground font-normal">Mbit</span></p>
             </div>
             <div className="p-4 rounded-xl bg-accent/5 border border-accent/10">
               <div className="flex items-center gap-2 mb-1">
                 <ArrowUp className="w-4 h-4 text-accent/50" />
-                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Uplink</p>
+                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Upload</p>
               </div>
-              <p className="font-code text-2xl font-black text-foreground">{uplink} <span className="text-[10px] text-muted-foreground font-normal">Mbps</span></p>
+              <p className="font-code text-2xl font-black text-foreground">{uplink} <span className="text-[10px] text-muted-foreground font-normal">Mbit</span></p>
             </div>
           </div>
         )}

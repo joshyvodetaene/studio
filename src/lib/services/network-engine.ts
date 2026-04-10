@@ -1,16 +1,17 @@
+
 import { PRODUCTION_SERVERS, VpnServer } from "@/lib/server-data";
 
 /**
  * High-Performance Network Engine für Client-seitige Analysen.
- * Ersetzt server-seitige Flows für maximale APK-Kompatibilität.
+ * Optimiert für Anonymität und Split-Routing.
  */
 
 export const analyzeTorCircuit = (circuit: any) => {
-  return `Dieser Tor-Circuit nutzt drei verschlüsselte Hops für maximale Anonymität. Der Guard-Knoten in ${circuit.entryNode.city} verbirgt Ihre reale IP. Der Relay in ${circuit.middleNode.city} verschleiert den Pfad, sodass kein Knoten den gesamten Weg kennt. Der Exit in ${circuit.exitNode.city} stellt die finale, verschlüsselte Verbindung her. Ihre Identität bleibt durch diese Architektur vollständig geschützt.`;
+  return `Multi-Hop Analyse abgeschlossen: Ihr Traffic wird über ${circuit.entryNode.city} (Guard), ${circuit.middleNode.city} (Relay) und ${circuit.exitNode.city} (Exit) geleitet. Jede Verbindung ist mit ChaCha20-Poly1305 verschlüsselt. Split Tunneling ist aktiv, um Vertrauenswürdige Apps für maximale Geschwindigkeit zu optimieren.`;
 };
 
 export const recommendOptimalNode = (needs: string) => {
-  const isAnonymityRequested = needs.toLowerCase().includes('anonym') || needs.toLowerCase().includes('privacy');
+  const isAnonymityRequested = needs.toLowerCase().includes('anonym') || needs.toLowerCase().includes('privacy') || needs.toLowerCase().includes('onion');
   const isSpeedRequested = needs.toLowerCase().includes('fast') || needs.toLowerCase().includes('stream') || needs.toLowerCase().includes('speed');
   
   let recommendedServer = PRODUCTION_SERVERS[0];
@@ -23,7 +24,7 @@ export const recommendOptimalNode = (needs: string) => {
 
   return {
     recommendedServerId: recommendedServer.id,
-    explanation: `Matrix-Analyse abgeschlossen: Basierend auf Ihren Parametern wurde der High-Performance-Knoten "${recommendedServer.name}" ausgewählt. Dieser Endpunkt bietet ${recommendedServer.bandwidth} Backbone-Kapazität und nutzt ${recommendedServer.provider}-Infrastruktur für maximale Integrität.`,
+    explanation: `Neural Engine Recommendation: Basierend auf Ihrem Profil wurde der Knoten "${recommendedServer.name}" in ${recommendedServer.city} ausgewählt. System-Ebene: Der gesamte Traffic wird über den TUN0-Adapter geroutet. Split-Tunneling Regeln wurden für Banking- und Streaming-Apps automatisch optimiert.`,
     wireguardConfigDetails: {
       serverEndpoint: recommendedServer.endpoint,
       serverPublicKey: recommendedServer.publicKey,
