@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Detaillierte Polyfills für Node.js-Module im Browser-Bundle
+      // Detaillierte Polyfills für Node.js-Module im Browser-Bundle deaktivieren
       config.resolve.fallback = {
         ...config.resolve.fallback,
         async_hooks: false,
@@ -62,6 +62,7 @@ const nextConfig: NextConfig = {
         '@opentelemetry/sdk-node': false,
         '@opentelemetry/context-async-hooks': false,
         '@opentelemetry/sdk-trace-node': false,
+        '@opentelemetry/api': false,
       };
     }
     return config;
