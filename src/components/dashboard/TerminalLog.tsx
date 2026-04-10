@@ -1,9 +1,8 @@
-
 "use client"
 
 import { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Terminal, Shield, Cpu, Zap, Activity } from "lucide-react";
+import { Terminal, Shield, Cpu, Zap, Activity, Bug } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LogEntry {
@@ -18,17 +17,17 @@ export function TerminalLog({ isActive }: { isActive: boolean }) {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const modules = ["HANDSHAKE", "TUNNEL", "ROUTING", "CIPHER", "ONION"];
+  const modules = ["CIPHER", "TUNNEL", "ROUTING", "HANDSHAKE", "KERNEL"];
   const messages = [
-    "ChaCha20-Poly1305 key rotation successful",
-    "Multi-Hop circuit established via node-de-torservers",
-    "Packet encapsulated in TLS 1.3 buffer",
-    "Noise Protocol handshake completed in 12ms",
-    "Bypassing ISP deep packet inspection",
-    "Neural Engine optimized routing path",
-    "Entropy pool re-seeded with quantum-safe data",
-    "Heartbeat signal received from exit node",
-    "Encrypted packet burst sent (1420 bytes)",
+    "Handshake rotation sequence successful",
+    "ChaCha20-Poly1305 stream established",
+    "Onion-Route hop selection randomized",
+    "X25519 elliptic curve key-exchange complete",
+    "Bypassing provider deep packet analysis",
+    "Neural synthesis profile synchronized",
+    "Entropy re-seeded (Quantum-Safe source)",
+    "Heartbeat ACK received from peer",
+    "TUN0 interface buffer optimization active",
   ];
 
   useEffect(() => {
@@ -37,62 +36,65 @@ export function TerminalLog({ isActive }: { isActive: boolean }) {
     const interval = setInterval(() => {
       const newLog: LogEntry = {
         id: Math.random().toString(36).substr(2, 9),
-        timestamp: new Date().toLocaleTimeString('de-DE', { hour12: false }),
-        type: Math.random() > 0.1 ? 'success' : 'warning',
+        timestamp: new Date().toLocaleTimeString('de-DE', { hour12: false, minute: '2-digit', second: '2-digit' }),
+        type: Math.random() > 0.05 ? 'success' : 'warning',
         module: modules[Math.floor(Math.random() * modules.length)],
         message: messages[Math.floor(Math.random() * messages.length)],
       };
       
-      setLogs(prev => [...prev.slice(-49), newLog]);
-    }, 1500);
+      setLogs(prev => [...prev.slice(-30), newLog]);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [isActive]);
 
   return (
-    <div className="flex flex-col h-full bg-black/60 rounded-2xl border border-white/5 overflow-hidden glass-panel">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/5">
+    <div className="flex flex-col h-full bg-black/80 rounded-2xl border border-white/5 overflow-hidden glass-panel neon-border">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-black/40">
         <div className="flex items-center gap-2">
-          <Terminal className="w-4 h-4 text-accent" />
-          <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Neural Encryption Stream</h3>
+          <Terminal className="w-4 h-4 text-primary" />
+          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Neural Execution Log</h3>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className={cn("w-1.5 h-1.5 rounded-full", isActive ? "bg-accent animate-pulse" : "bg-muted")} />
-          <span className="text-[8px] font-bold text-muted-foreground uppercase">{isActive ? "Streaming" : "Buffer Standby"}</span>
+        <div className="flex items-center gap-2">
+          <div className={cn("w-1.5 h-1.5 rounded-full", isActive ? "bg-primary animate-pulse shadow-[0_0_5px_red]" : "bg-muted")} />
+          <span className="text-[8px] font-bold text-muted-foreground uppercase">{isActive ? "Processing" : "Idle"}</span>
         </div>
       </div>
       
-      <ScrollArea className="flex-1 p-4 font-code text-[10px]">
+      <ScrollArea className="flex-1 p-5 font-code text-[10px] leading-relaxed">
         <div className="space-y-1.5">
           {logs.length === 0 && (
-            <p className="text-muted-foreground italic opacity-50">Waiting for tunnel handshake...</p>
+            <div className="flex flex-col items-center justify-center h-20 opacity-30 text-muted-foreground italic gap-2">
+              <Bug className="w-5 h-5" />
+              <span>Awaiting tunnel initialization...</span>
+            </div>
           )}
           {logs.map((log) => (
-            <div key={log.id} className="flex gap-3 animate-in fade-in slide-in-from-left-1 duration-300">
-              <span className="text-muted-foreground shrink-0">[{log.timestamp}]</span>
+            <div key={log.id} className="flex gap-4 animate-in fade-in slide-in-from-left-2 duration-400 group">
+              <span className="text-muted-foreground/60 shrink-0 font-mono">[{log.timestamp}]</span>
               <span className={cn(
-                "font-bold shrink-0 w-12",
-                log.type === 'success' ? "text-accent" : "text-yellow-500"
+                "font-black shrink-0 w-14 tracking-tighter uppercase",
+                log.type === 'success' ? "text-primary/90" : "text-yellow-600"
               )}>{log.module}</span>
-              <span className="text-foreground/80">{log.message}</span>
+              <span className="text-white/80 group-hover:text-white transition-colors">{log.message}</span>
             </div>
           ))}
           <div ref={scrollRef} />
         </div>
       </ScrollArea>
       
-      <div className="px-4 py-2 bg-black/40 border-t border-white/5 grid grid-cols-3 gap-2">
+      <div className="px-5 py-2.5 bg-black/60 border-t border-white/5 grid grid-cols-3 gap-4">
         <div className="flex items-center gap-2">
-          <Cpu className="w-3 h-3 text-accent/50" />
-          <span className="text-[8px] text-muted-foreground font-bold">ARMv8 SHA-2</span>
+          <Cpu className="w-3.5 h-3.5 text-primary/40" />
+          <span className="text-[8px] text-muted-foreground font-black uppercase">V8-SHA256</span>
         </div>
         <div className="flex items-center gap-2">
-          <Shield className="w-3 h-3 text-accent/50" />
-          <span className="text-[8px] text-muted-foreground font-bold">X25519</span>
+          <Shield className="w-3.5 h-3.5 text-primary/40" />
+          <span className="text-[8px] text-muted-foreground font-black uppercase">AES-GCM</span>
         </div>
         <div className="flex items-center gap-2">
-          <Zap className="w-3 h-3 text-accent/50" />
-          <span className="text-[8px] text-muted-foreground font-bold">0-RTT</span>
+          <Zap className="w-3.5 h-3.5 text-primary/40" />
+          <span className="text-[8px] text-muted-foreground font-black uppercase">0-RTT-v2</span>
         </div>
       </div>
     </div>

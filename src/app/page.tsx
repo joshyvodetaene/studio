@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react";
@@ -50,65 +49,38 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-[#050A14] safe-top relative">
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-black safe-top relative">
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Desktop Sidebar */}
-      <aside className="w-20 hidden md:flex flex-col items-center py-8 border-r border-white/5 gap-8 bg-black/40 backdrop-blur-xl z-20">
-        <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center text-background shadow-lg shadow-accent/20">
+      <aside className="w-20 hidden md:flex flex-col items-center py-8 border-r border-white/5 gap-8 bg-black/60 backdrop-blur-xl z-20">
+        <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 animate-pulse">
           <Shield className="w-7 h-7" />
         </div>
         
         <nav className="flex flex-col gap-5">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setActiveTab('home')}
-            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'home' ? "text-accent bg-accent/10" : "text-muted-foreground")}
-          >
-            <LayoutDashboard className="w-6 h-6" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setActiveTab('servers')}
-            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'servers' ? "text-accent bg-accent/10" : "text-muted-foreground")}
-          >
-            <Globe className="w-6 h-6" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setActiveTab('rules')}
-            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'rules' ? "text-accent bg-accent/10" : "text-muted-foreground")}
-          >
-            <Lock className="w-6 h-6" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setActiveTab('network')}
-            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'network' ? "text-accent bg-accent/10" : "text-muted-foreground")}
-          >
-            <Network className="w-6 h-6" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setActiveTab('terminal')}
-            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'terminal' ? "text-accent bg-accent/10" : "text-muted-foreground")}
-          >
-            <Terminal className="w-6 h-6" />
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setActiveTab('config')}
-            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'config' ? "text-accent bg-accent/10" : "text-muted-foreground")}
-          >
-            <Settings className="w-6 h-6" />
-          </Button>
+          {[
+            { id: 'home', icon: LayoutDashboard },
+            { id: 'servers', icon: Globe },
+            { id: 'rules', icon: Lock },
+            { id: 'network', icon: Network },
+            { id: 'terminal', icon: Terminal },
+            { id: 'config', icon: Settings },
+          ].map((item) => (
+            <Button 
+              key={item.id}
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setActiveTab(item.id as any)}
+              className={cn(
+                "h-12 w-12 rounded-xl transition-all duration-300", 
+                activeTab === item.id ? "text-primary bg-primary/10 border border-primary/20" : "text-muted-foreground hover:text-primary"
+              )}
+            >
+              <item.icon className="w-6 h-6" />
+            </Button>
+          ))}
         </nav>
         
         <div className="mt-auto">
@@ -119,23 +91,23 @@ export default function Dashboard() {
       </aside>
 
       <main className="flex-1 flex flex-col h-full overflow-hidden pb-20 md:pb-0 z-10">
-        <header className="px-6 py-4 flex items-center justify-between bg-black/20 backdrop-blur-md border-b border-white/5">
+        <header className="px-6 py-4 flex items-center justify-between bg-black/40 backdrop-blur-md border-b border-white/5">
           <div>
-            <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-accent">Torro <span className="text-white">PRO</span></h1>
+            <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-primary">Torro <span className="text-white">PRO</span></h1>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", connectionStatus === 'connected' ? "bg-green-500" : "bg-yellow-500")} />
+              <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", connectionStatus === 'connected' ? "bg-red-500 shadow-[0_0_8px_red]" : "bg-muted")} />
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                {connectionStatus === 'connected' ? "Secure Tunnel Live" : "Encrypted Backbone Ready"}
+                {connectionStatus === 'connected' ? "Dark-Web Backbone Live" : "Encryption Hub Ready"}
               </p>
             </div>
           </div>
           
           <div className="flex items-center gap-4">
             <div className="relative group hidden sm:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-accent transition-colors" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <Input 
-                placeholder="Filter high-perf nodes..." 
-                className="pl-9 h-10 w-48 md:w-64 text-xs bg-white/5 border-white/10 rounded-xl focus:w-80 transition-all"
+                placeholder="Find secure nodes..." 
+                className="pl-9 h-10 w-48 md:w-64 text-xs bg-white/5 border-white/10 rounded-xl focus:w-80 transition-all focus:border-primary/50"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -144,17 +116,17 @@ export default function Dashboard() {
             <div className={cn(
               "flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all duration-500 group relative",
               connectionStatus === 'connected' 
-                ? "bg-accent/10 border-accent/40 text-accent shadow-[0_0_20px_rgba(71,208,235,0.3)]" 
+                ? "bg-primary/10 border-primary/40 text-primary shadow-[0_0_25px_rgba(220,20,60,0.3)]" 
                 : "bg-white/5 border-white/10 text-muted-foreground"
             )}>
               <div className={cn(
-                "absolute inset-0 rounded-xl bg-accent/20 blur-md transition-opacity duration-1000",
+                "absolute inset-0 rounded-xl bg-primary/10 blur-md transition-opacity duration-1000",
                 connectionStatus === 'connected' ? "opacity-100" : "opacity-0"
               )} />
               {connectionStatus === 'connected' ? (
                 <ShieldCheck className="w-5 h-5 animate-pulse relative z-10" />
               ) : (
-                <ShieldAlert className="w-5 h-5 text-destructive/60 relative z-10" />
+                <ShieldAlert className="w-5 h-5 text-muted-foreground relative z-10" />
               )}
               <span className="hidden sm:inline text-[10px] font-black uppercase tracking-tighter italic relative z-10">
                 {connectionStatus === 'connected' ? "ENCRYPTED" : "UNPROTECTED"}
@@ -193,8 +165,8 @@ export default function Dashboard() {
               {activeTab === 'servers' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Network Infrastructure</h2>
-                    <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full border border-accent/20">{filteredServers.length} Active Endpoints</span>
+                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Dark-Web Node Topology</h2>
+                    <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">{filteredServers.length} Active Points</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {filteredServers.map((server) => (
@@ -241,52 +213,25 @@ export default function Dashboard() {
       </main>
 
       {/* Mobile Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-black/60 backdrop-blur-2xl border-t border-white/5 flex md:hidden items-center justify-around px-4 safe-bottom z-30">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setActiveTab('home')}
-          className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'home' ? "text-accent scale-110" : "text-muted-foreground")}
-        >
-          <LayoutDashboard className="w-5 h-5" />
-          <span className="text-[7px] font-bold uppercase tracking-widest">Dash</span>
-        </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setActiveTab('servers')}
-          className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'servers' ? "text-accent scale-110" : "text-muted-foreground")}
-        >
-          <Globe className="w-5 h-5" />
-          <span className="text-[7px] font-bold uppercase tracking-widest">Nodes</span>
-        </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setActiveTab('rules')}
-          className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'rules' ? "text-accent scale-110" : "text-muted-foreground")}
-        >
-          <Lock className="w-5 h-5" />
-          <span className="text-[7px] font-bold uppercase tracking-widest">Rules</span>
-        </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setActiveTab('network')}
-          className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'network' ? "text-accent scale-110" : "text-muted-foreground")}
-        >
-          <Network className="w-5 h-5" />
-          <span className="text-[7px] font-bold uppercase tracking-widest">Net</span>
-        </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setActiveTab('terminal')}
-          className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'terminal' ? "text-accent scale-110" : "text-muted-foreground")}
-        >
-          <Terminal className="w-5 h-5" />
-          <span className="text-[7px] font-bold uppercase tracking-widest">Log</span>
-        </Button>
+      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-black/80 backdrop-blur-2xl border-t border-white/5 flex md:hidden items-center justify-around px-4 safe-bottom z-30">
+        {[
+          { id: 'home', icon: LayoutDashboard, label: 'Dash' },
+          { id: 'servers', icon: Globe, label: 'Nodes' },
+          { id: 'rules', icon: Lock, label: 'Rules' },
+          { id: 'network', icon: Network, label: 'Net' },
+          { id: 'terminal', icon: Terminal, label: 'Log' },
+        ].map((item) => (
+          <Button 
+            key={item.id}
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setActiveTab(item.id as any)}
+            className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === item.id ? "text-primary scale-110" : "text-muted-foreground")}
+          >
+            <item.icon className="w-5 h-5" />
+            <span className="text-[7px] font-bold uppercase tracking-widest">{item.label}</span>
+          </Button>
+        ))}
       </nav>
     </div>
   );

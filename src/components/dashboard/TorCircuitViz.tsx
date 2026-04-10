@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2, Loader2, Info, ChevronRight, ShieldCheck } from "lucide-react";
+import { Share2, Loader2, Info, ChevronRight, ShieldCheck, Radar } from "lucide-react";
 import { PRODUCTION_SERVERS } from "@/lib/server-data";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeTorCircuit } from "@/lib/services/network-engine";
@@ -40,55 +40,57 @@ export function TorCircuitViz() {
       } catch (e) {
         toast({
           variant: "destructive",
-          title: "Matrix-Timeout",
-          description: "Lokale Analyse verzögert."
+          title: "Analysis Failure",
+          description: "Could not retrieve topology details."
         });
       } finally {
         setLoading(false);
       }
-    }, 1000);
+    }, 1200);
   };
 
   return (
-    <Card className="glass-panel border-none h-full shadow-2xl">
+    <Card className="glass-panel border-none h-full shadow-2xl relative overflow-hidden group">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[60px] -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors duration-700" />
+      
       <CardHeader className="pb-4">
-        <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center justify-between">
+        <CardTitle className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            Active Multi-Hop Topology
+            <Radar className="w-4 h-4 text-primary animate-pulse" />
+            Circuit Topology Radar
           </div>
-          <Share2 className="w-3 h-3 cursor-pointer hover:text-accent transition-colors" />
+          <Share2 className="w-3 h-3 cursor-pointer hover:text-primary transition-colors" />
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center justify-between px-2 relative py-4">
-          <div className="absolute top-1/2 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-accent/30 to-transparent -z-10 -translate-y-1/2" />
+        <div className="flex items-center justify-between px-2 relative py-6">
+          <div className="absolute top-1/2 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent -z-10 -translate-y-1/2 animate-pulse" />
           
-          <div className="flex flex-col items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-accent text-background flex items-center justify-center font-black text-[10px] shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform">GUARD</div>
+          <div className="flex flex-col items-center gap-2 group/node">
+            <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-black text-[10px] shadow-lg shadow-primary/30 group-hover/node:scale-110 transition-transform duration-500">GUARD</div>
             <div className="text-center">
-              <p className="text-[9px] font-black text-white uppercase tracking-tighter">{realCircuit.entryNode.country.substring(0,2).toUpperCase()}</p>
-              <p className="text-[7px] text-muted-foreground font-mono">{realCircuit.entryNode.ip.split('.').slice(0,3).join('.')}</p>
+              <p className="text-[10px] font-black text-white uppercase tracking-tighter">{realCircuit.entryNode.country.substring(0,3).toUpperCase()}</p>
+              <p className="text-[8px] text-muted-foreground font-mono">{realCircuit.entryNode.city}</p>
             </div>
           </div>
           
-          <ChevronRight className="w-4 h-4 text-accent/20" />
+          <ChevronRight className="w-5 h-5 text-primary/30" />
 
-          <div className="flex flex-col items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-black/40 border border-accent/30 text-accent flex items-center justify-center font-black text-[10px] group-hover:scale-110 transition-transform">RELAY</div>
+          <div className="flex flex-col items-center gap-2 group/node">
+            <div className="w-12 h-12 rounded-full bg-black border-2 border-primary/40 text-primary flex items-center justify-center font-black text-[10px] group-hover/node:scale-110 transition-transform duration-500">RELAY</div>
             <div className="text-center">
-              <p className="text-[9px] font-black text-white uppercase tracking-tighter">{realCircuit.middleNode.country.substring(0,2).toUpperCase()}</p>
-              <p className="text-[7px] text-muted-foreground font-mono">{realCircuit.middleNode.ip.split('.').slice(0,3).join('.')}</p>
+              <p className="text-[10px] font-black text-white uppercase tracking-tighter">{realCircuit.middleNode.country.substring(0,3).toUpperCase()}</p>
+              <p className="text-[8px] text-muted-foreground font-mono">{realCircuit.middleNode.city}</p>
             </div>
           </div>
 
-          <ChevronRight className="w-4 h-4 text-accent/20" />
+          <ChevronRight className="w-5 h-5 text-primary/30" />
 
-          <div className="flex flex-col items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-black/40 border-dashed border-accent/40 text-accent flex items-center justify-center font-black text-[10px] group-hover:scale-110 transition-transform">EXIT</div>
+          <div className="flex flex-col items-center gap-2 group/node">
+            <div className="w-12 h-12 rounded-full bg-black border-2 border-dashed border-primary/60 text-primary flex items-center justify-center font-black text-[10px] group-hover/node:scale-110 transition-transform duration-500 shadow-[0_0_15px_rgba(220,20,60,0.2)]">EXIT</div>
             <div className="text-center">
-              <p className="text-[9px] font-black text-white uppercase tracking-tighter">{realCircuit.exitNode.country.substring(0,2).toUpperCase()}</p>
-              <p className="text-[7px] text-muted-foreground font-mono">{realCircuit.exitNode.ip.split('.').slice(0,3).join('.')}</p>
+              <p className="text-[10px] font-black text-white uppercase tracking-tighter">{realCircuit.exitNode.country.substring(0,3).toUpperCase()}</p>
+              <p className="text-[8px] text-muted-foreground font-mono">{realCircuit.exitNode.city}</p>
             </div>
           </div>
         </div>
@@ -96,24 +98,24 @@ export function TorCircuitViz() {
         {!explanation ? (
           <Button 
             variant="outline" 
-            className="w-full text-[10px] h-10 gap-2 border-white/10 hover:bg-white/5 font-black uppercase tracking-widest rounded-xl transition-all hover:border-accent/40"
+            className="w-full text-[10px] h-11 gap-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 text-white font-black uppercase tracking-widest rounded-xl transition-all"
             onClick={handleExplain}
             disabled={loading}
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin text-accent" /> : <ShieldCheck className="w-4 h-4 text-accent" />}
-            Analyze Anonymity Layer
+            {loading ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : <ShieldCheck className="w-4 h-4 text-primary" />}
+            Deep Trace Analysis
           </Button>
         ) : (
-          <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 text-[11px] leading-relaxed animate-in fade-in zoom-in-95 duration-500 relative">
+          <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 text-[11px] leading-relaxed animate-in fade-in zoom-in-95 duration-500 relative">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-5 h-5 rounded bg-accent/20 flex items-center justify-center">
-                <Info className="w-3 h-3 text-accent" />
+              <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center">
+                <Info className="w-3.5 h-3.5 text-primary" />
               </div>
-              <h5 className="font-black text-accent uppercase tracking-widest">Circuit Analysis Complete</h5>
+              <h5 className="font-black text-primary uppercase tracking-widest">Topology Verification Complete</h5>
             </div>
-            <p className="text-foreground/80 leading-relaxed italic">"{explanation}"</p>
-            <Button variant="link" className="p-0 h-auto text-[10px] text-accent mt-3 font-bold uppercase tracking-tighter hover:no-underline" onClick={() => setExplanation(null)}>
-              Clear Buffer
+            <p className="text-foreground/90 leading-relaxed italic border-l-2 border-primary/30 pl-3">"{explanation}"</p>
+            <Button variant="link" className="p-0 h-auto text-[10px] text-primary mt-4 font-bold uppercase tracking-tighter hover:no-underline" onClick={() => setExplanation(null)}>
+              Reset Neural Trace
             </Button>
           </div>
         )}

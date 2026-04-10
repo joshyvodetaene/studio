@@ -1,11 +1,10 @@
-
 "use client"
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Download, Wand2, Terminal, Loader2, Check, Copy, RefreshCcw, Shield, Zap, Ghost, Gamepad2 } from "lucide-react";
+import { Download, Wand2, Terminal, Loader2, Check, Copy, RefreshCcw, Shield, Zap, Ghost, Gamepad2, BrainCircuit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { configureTunnel, TunnelConfigOutput } from "@/ai/flows/configure-tunnel-flow";
 
@@ -22,14 +21,14 @@ export function ConfigTool() {
       const result = await configureTunnel({ userIntent: intent });
       setConfig(result);
       toast({
-        title: "Neural Synthesis Active",
-        description: "Optimizing tunnel architecture..."
+        title: "Synthesis Stream Active",
+        description: "Rebuilding tunnel architecture..."
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Synthesis Error",
-        description: "Fallback to local safe defaults."
+        title: "Matrix Error",
+        description: "Neural synthesis timed out."
       });
     } finally {
       setLoading(false);
@@ -38,39 +37,39 @@ export function ConfigTool() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied to buffer" });
+    toast({ title: "Copied to neural buffer" });
   };
 
   const predefinedPrompts = [
-    { label: "Stealth", icon: <Ghost className="w-3 h-3" />, intent: "Maximum stealth and high surveillance protection." },
-    { label: "Stream", icon: <Zap className="w-3 h-3" />, intent: "High-speed 4K streaming booster." },
-    { label: "Gaming", icon: <Gamepad2 className="w-3 h-3" />, intent: "Ultra low-latency ping for gaming." },
-    { label: "Safe", icon: <Shield className="w-3 h-3" />, intent: "General secure browsing guard." }
+    { label: "Stealth", icon: <Ghost className="w-3.5 h-3.5" />, intent: "Maximum military-grade stealth and high surveillance protection." },
+    { label: "Stream", icon: <Zap className="w-3.5 h-3.5" />, intent: "High-speed 4K/8K streaming booster profile." },
+    { label: "Gaming", icon: <Gamepad2 className="w-3.5 h-3.5" />, intent: "Ultra low-latency ping for competitive gaming clusters." },
+    { label: "Safety", icon: <Shield className="w-3.5 h-3.5" />, intent: "Secure financial browsing guard with DNS encryption." }
   ];
 
   return (
-    <Card className="glass-panel border-none h-full flex flex-col shadow-2xl">
+    <Card className="glass-panel border-none h-full flex flex-col shadow-2xl neon-border">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Terminal className="w-5 h-5 text-accent" />
+        <CardTitle className="text-xl flex items-center gap-2">
+          <BrainCircuit className="w-6 h-6 text-primary" />
           Neural Engine PRO
         </CardTitle>
-        <CardDescription className="text-xs uppercase font-bold tracking-tight text-muted-foreground">
-          Local AI Architecture Synthesis
+        <CardDescription className="text-[10px] uppercase font-bold tracking-[0.1em] text-muted-foreground">
+          Autonomous Config Synthesis
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 flex-1">
         {!config ? (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-2">
-              <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Target Mission Profile</p>
-              <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-1 gap-3">
+              <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Mission Profiles</p>
+              <div className="grid grid-cols-2 gap-2">
                 {predefinedPrompts.map((p) => (
                   <Button 
                     key={p.label}
                     variant="outline" 
                     size="sm"
-                    className="text-[10px] h-8 bg-white/5 border-white/10 hover:border-accent/50 gap-1.5 rounded-lg uppercase font-bold transition-all"
+                    className="text-[10px] h-10 bg-white/5 border-white/5 hover:border-primary/50 gap-2 rounded-xl uppercase font-bold transition-all"
                     onClick={() => handleAIAction(p.intent)}
                     disabled={loading}
                   >
@@ -82,72 +81,73 @@ export function ConfigTool() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Custom Intent Analysis</label>
+              <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Custom Neural Intent</label>
               <Textarea 
-                placeholder='Tell Torro what you need... e.g. "Safe banking while traveling"'
-                className="bg-black/40 border-white/5 min-h-[100px] text-sm focus:ring-accent/50 transition-all rounded-xl placeholder:text-muted-foreground/30"
+                placeholder='E.g. "Banking via untrusted airport WiFi"'
+                className="bg-black/60 border-white/5 min-h-[120px] text-sm focus:border-primary/50 transition-all rounded-xl placeholder:text-muted-foreground/20 italic"
                 value={needs}
                 onChange={(e) => setNeeds(e.target.value)}
               />
             </div>
             
             <Button 
-              className="w-full bg-accent hover:bg-accent/80 text-background font-black gap-2 h-12 rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-accent/20"
+              className="w-full bg-primary hover:bg-primary/80 text-white font-black gap-2 h-14 rounded-xl transition-all shadow-lg shadow-primary/20 uppercase tracking-widest italic"
               onClick={() => handleAIAction(needs)}
               disabled={loading || !needs}
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
-              Synthesize Configuration
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <BrainCircuit className="w-5 h-5" />}
+              Execute Synthesis
             </Button>
           </div>
         ) : (
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="p-4 rounded-xl bg-accent/10 border border-accent/20 text-[11px] leading-relaxed">
-              <h5 className="font-black text-accent flex items-center gap-1.5 mb-2 uppercase tracking-tighter">
-                <Check className="w-3 h-3" /> Synthesis Complete
-              </h5>
-              <p className="text-foreground/90 italic">"{config.explanation}"</p>
+          <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="p-5 rounded-2xl bg-primary/10 border border-primary/20 text-[11px] leading-relaxed">
+              <div className="flex items-center justify-between mb-3">
+                <h5 className="font-black text-primary flex items-center gap-2 uppercase tracking-tighter">
+                  <Check className="w-4 h-4" /> Config Synthesized
+                </h5>
+                <div className="w-2 h-2 rounded-full bg-primary animate-ping" />
+              </div>
+              <p className="text-white/90 italic leading-relaxed">"{config.explanation}"</p>
               
-              <div className="grid grid-cols-3 gap-2 mt-4">
-                <div className="bg-black/20 p-2 rounded-lg border border-white/5 text-[9px] font-mono flex flex-col items-center">
-                  <span className="text-muted-foreground">HOPS</span>
-                  <span className="text-accent font-black text-xs">{config.hops}</span>
-                </div>
-                <div className="bg-black/20 p-2 rounded-lg border border-white/5 text-[9px] font-mono flex flex-col items-center">
-                  <span className="text-muted-foreground">MTU</span>
-                  <span className="text-accent font-black text-xs">{config.mtu}</span>
-                </div>
-                <div className="bg-black/20 p-2 rounded-lg border border-white/5 text-[9px] font-mono flex flex-col items-center">
-                  <span className="text-muted-foreground">TUNNEL</span>
-                  <span className="text-accent font-black text-[8px]">{config.splitTunneling ? 'SPLIT' : 'FULL'}</span>
-                </div>
+              <div className="grid grid-cols-3 gap-3 mt-5">
+                {[
+                  { label: 'HOPS', val: config.hops },
+                  { label: 'MTU', val: config.mtu },
+                  { label: 'DNS', val: config.dnsOverHttps ? 'DoH' : 'BASE' }
+                ].map((stat) => (
+                  <div key={stat.label} className="bg-black/40 p-3 rounded-xl border border-white/5 text-[9px] font-mono flex flex-col items-center gap-1">
+                    <span className="text-muted-foreground tracking-widest">{stat.label}</span>
+                    <span className="text-primary font-black text-sm">{stat.val}</span>
+                  </div>
+                ))}
               </div>
             </div>
             
             <div className="group relative">
-              <div className="bg-black/60 p-5 rounded-xl font-code text-[10px] overflow-x-auto whitespace-pre border border-white/5 max-h-[150px] leading-relaxed text-cyan-100/70">
-                {`[Interface]\nPrivateKey = <ENCRYPTED>\nMTU = ${config.mtu}\nDNS = ${config.dnsOverHttps ? 'DoH-Active' : '1.1.1.1'}\n\n[Peer]\nEndpoint = ${config.recommendedServerId}.torro.pro\nAllowedIPs = 0.0.0.0/0`}
+              <div className="bg-black/80 p-6 rounded-2xl font-code text-[11px] overflow-x-auto whitespace-pre border border-white/5 max-h-[180px] leading-relaxed text-red-100/60 scrollbar-hide">
+                {`[Interface]\nPrivateKey = <REDACTED>\nMTU = ${config.mtu}\nDNS = ${config.dnsOverHttps ? 'Sec-DoH-1' : '1.1.1.1'}\n\n[Peer]\nEndpoint = dark-${config.recommendedServerId}.pro\nAllowedIPs = 0.0.0.0/0`}
               </div>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="absolute top-2 right-2 h-8 w-8 bg-black/40 hover:bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => copyToClipboard(`Profile: ${config.recommendedServerId}`)}
+                className="absolute top-3 right-3 h-10 w-10 bg-black/60 hover:bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
+                onClick={() => copyToClipboard(`Config: ${config.recommendedServerId}`)}
               >
-                <Copy className="w-3 h-3 text-accent" />
+                <Copy className="w-4 h-4 text-primary" />
               </Button>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               <Button 
                 variant="outline" 
-                className="flex-1 text-[10px] font-bold border-white/10 hover:bg-white/5 h-10 rounded-xl uppercase tracking-widest"
+                className="flex-1 text-[10px] font-bold border-white/10 hover:bg-white/5 h-12 rounded-xl uppercase tracking-[0.2em]"
                 onClick={() => setConfig(null)}
               >
-                <RefreshCcw className="w-3 h-3 mr-2" /> Reset Engine
+                <RefreshCcw className="w-3.5 h-3.5 mr-2" /> Reset
               </Button>
-              <Button className="flex-1 bg-accent text-background text-[10px] font-black gap-2 h-10 rounded-xl uppercase tracking-widest shadow-lg shadow-accent/20">
-                <Download className="w-3 h-3" /> Apply Profile
+              <Button className="flex-1 bg-primary text-white text-[10px] font-black gap-2 h-12 rounded-xl uppercase tracking-[0.2em] shadow-lg shadow-primary/30">
+                <Download className="w-3.5 h-3.5" /> Deploy
               </Button>
             </div>
           </div>
