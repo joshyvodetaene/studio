@@ -2,13 +2,21 @@
 
 Torro ist ein modernes, standalone Privacy-Portal, das für maximale Anonymität und hohen Durchsatz entwickelt wurde. Es nutzt eine Kombination aus Tor-Multi-Hop-Routing und Hochgeschwindigkeits-Endpunkten.
 
-## 🚀 Wie lade ich das Projekt herunter?
+## 🚀 Wie lade ich das Projekt auf meinen PC?
 
-Da dieses Projekt gerade in einer KI-Umgebung erstellt wurde, ist der beste Weg:
+Da du dich gerade in der Cloud-Umgebung befindest, ist der beste Weg über GitHub:
 
-1. **Push zu GitHub**: Nutze die Befehle unten, um den Code in dein Repository zu laden.
-2. **Download von GitHub**: Gehe auf deine GitHub-Seite (`https://github.com/joshyvodetaene/torro`) und klicke auf **Code > Download ZIP**.
-3. **Alternativ**: Falls du Git installiert hast, nutze `git clone https://github.com/joshyvodetaene/torro.git`.
+1. **Terminal öffnen**: Klicke unten in Firebase Studio auf das **Terminal**.
+2. **Git Befehle eingeben**: Kopiere diese Zeilen und füge sie nacheinander ein:
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit: Torro Production Ready"
+   git branch -M main
+   git remote add origin https://github.com/joshyvodetaene/torro.git
+   git push -u origin main
+   ```
+3. **Download**: Gehe jetzt in deinem Browser auf `https://github.com/joshyvodetaene/torro`. Dort kannst du auf **Code > Download ZIP** klicken, um alles auf deinen Computer zu laden.
 
 ## 🛠️ Lokale Installation (nach dem Download)
 
@@ -25,39 +33,20 @@ Wenn du das Projekt auf deinem Computer hast:
    ```
 4. Öffne `http://localhost:9002` in deinem Browser.
 
-## 📱 GitHub Workflows (Automatischer APK Build)
+## 📱 GitHub Actions (Automatische APK)
 
-Nachdem du den Code zu GitHub gepusht hast, passiert folgendes automatisch:
-- **Build**: GitHub baut bei jedem Push eine APK. Du findest sie unter dem Tab **"Actions"** beim jeweiligen Build unter **"Artifacts"**.
-- **Release**: Erstelle ein Tag, um automatisch einen offiziellen Release mit der fertigen APK zu erstellen:
+Sobald du den Code zu GitHub gepusht hast (Schritt oben), passiert folgendes:
+- **Build**: GitHub baut automatisch deine APK. Du findest sie unter dem Tab **"Actions"** beim jeweiligen Build unter **"Artifacts"**.
+- **Release**: Wenn du ein Tag erstellst, wird ein offizieller Release erstellt:
   ```bash
   git tag v1.0.0
   git push origin v1.0.0
   ```
 
-## 📂 Git Befehle (Projekt zu GitHub hochladen)
+## 📂 Wo finde ich was in Firebase Studio?
 
-Öffne dein **Terminal** im Projektordner und führe diese Befehle aus:
+- **Links**: Die Dateiliste (hier kannst du Dateien öffnen).
+- **Unten**: Das Terminal (für Git-Befehle).
+- **Mitte**: Der Code-Editor.
 
-```bash
-# 1. Git initialisieren
-git init
-
-# 2. Dateien hinzufügen
-git add .
-
-# 3. Ersten Commit erstellen
-git commit -m "Initial commit: Torro Production Ready"
-
-# 4. Branch umbenennen
-git branch -M main
-
-# 5. Dein GitHub Repository verknüpfen
-git remote add origin https://github.com/joshyvodetaene/torro.git
-
-# 6. Code hochladen (Push)
-git push -u origin main
-```
-
-## ⚖️ Lizenz
-Open Source unter der MIT-Lizenz.
+Viel Erfolg mit Torro!
