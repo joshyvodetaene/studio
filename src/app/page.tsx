@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react";
@@ -7,16 +8,18 @@ import { ConnectionPanel } from "@/components/dashboard/ConnectionPanel";
 import { DeviceList } from "@/components/dashboard/DeviceList";
 import { TorCircuitViz } from "@/components/dashboard/TorCircuitViz";
 import { ConfigTool } from "@/components/dashboard/ConfigTool";
+import { NetworkInterfaceDetails } from "@/components/dashboard/NetworkInterfaceDetails";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity } from "lucide-react";
+import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
   const [selectedServer, setSelectedServer] = useState<VpnServer | null>(PRODUCTION_SERVERS[0]);
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'config'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'config' | 'network'>('home');
+  const [connectionStatus, setConnectionStatus] = useState<"disconnected" | "connecting" | "connected">("disconnected");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,6 +39,7 @@ export default function Dashboard() {
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
+      {/* Desktop Sidebar */}
       <aside className="w-20 hidden md:flex flex-col items-center py-8 border-r border-white/5 gap-8 bg-black/40 backdrop-blur-xl z-20">
         <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center text-background shadow-lg shadow-accent/20">
           <Shield className="w-7 h-7" />
@@ -61,6 +65,14 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             size="icon" 
+            onClick={() => setActiveTab('network')}
+            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'network' ? "text-accent bg-accent/10" : "text-muted-foreground")}
+          >
+            <Network className="w-6 h-6" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon" 
             onClick={() => setActiveTab('config')}
             className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'config' ? "text-accent bg-accent/10" : "text-muted-foreground")}
           >
@@ -80,22 +92,45 @@ export default function Dashboard() {
           <div>
             <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-accent">Torro <span className="text-white">PRO</span></h1>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Secure Network Live</p>
+              <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", connectionStatus === 'connected' ? "bg-green-500" : "bg-yellow-500")} />
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                {connectionStatus === 'connected' ? "Secure Tunnel Live" : "Encrypted Backbone Ready"}
+              </p>
             </div>
           </div>
-          <div className="relative group hidden sm:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-accent transition-colors" />
-            <Input 
-              placeholder="Filter high-perf nodes..." 
-              className="pl-9 h-10 w-48 md:w-64 text-xs bg-white/5 border-white/10 rounded-xl focus:w-80 transition-all"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+          
+          <div className="flex items-center gap-4">
+            <div className="relative group hidden sm:block">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-accent transition-colors" />
+              <Input 
+                placeholder="Filter high-perf nodes..." 
+                className="pl-9 h-10 w-48 md:w-64 text-xs bg-white/5 border-white/10 rounded-xl focus:w-80 transition-all"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            
+            {/* Dynamic Status Icon */}
+            <div className={cn(
+              "flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all duration-500",
+              connectionStatus === 'connected' 
+                ? "bg-accent/10 border-accent/40 text-accent shadow-[0_0_15px_rgba(71,208,235,0.2)]" 
+                : "bg-white/5 border-white/10 text-muted-foreground"
+            )}>
+              {connectionStatus === 'connected' ? (
+                <ShieldCheck className="w-5 h-5 animate-pulse" />
+              ) : (
+                <ShieldAlert className="w-5 h-5 text-destructive/60" />
+              )}
+              <span className="hidden sm:inline text-[10px] font-black uppercase tracking-tighter italic">
+                {connectionStatus === 'connected' ? "TUNNEL ACTIVE" : "UNPROTECTED"}
+              </span>
+            </div>
+
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <User className="w-6 h-6" />
+            </Button>
           </div>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <User className="w-6 h-6" />
-          </Button>
         </header>
 
         <div className="flex-1 overflow-hidden">
@@ -104,7 +139,10 @@ export default function Dashboard() {
               {activeTab === 'home' && (
                 <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="xl:col-span-4 lg:sticky lg:top-0">
-                    <ConnectionPanel selectedServer={selectedServer} />
+                    <ConnectionPanel 
+                      selectedServer={selectedServer} 
+                      onStatusChange={setConnectionStatus}
+                    />
                   </div>
                   <div className="xl:col-span-8 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -149,6 +187,12 @@ export default function Dashboard() {
                 </div>
               )}
 
+              {activeTab === 'network' && (
+                <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <NetworkInterfaceDetails isConnected={connectionStatus === 'connected'} selectedServer={selectedServer} />
+                </div>
+              )}
+
               {activeTab === 'config' && (
                 <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <ConfigTool />
@@ -159,6 +203,7 @@ export default function Dashboard() {
         </div>
       </main>
 
+      {/* Mobile Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 h-20 bg-black/60 backdrop-blur-2xl border-t border-white/5 flex md:hidden items-center justify-around px-8 safe-bottom z-30">
         <Button 
           variant="ghost" 
@@ -167,7 +212,7 @@ export default function Dashboard() {
           className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'home' ? "text-accent scale-110" : "text-muted-foreground")}
         >
           <LayoutDashboard className="w-6 h-6" />
-          <span className="text-[8px] font-bold uppercase tracking-widest">Dashboard</span>
+          <span className="text-[8px] font-bold uppercase tracking-widest">Dash</span>
         </Button>
         <Button 
           variant="ghost" 
@@ -176,7 +221,16 @@ export default function Dashboard() {
           className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'servers' ? "text-accent scale-110" : "text-muted-foreground")}
         >
           <Globe className="w-6 h-6" />
-          <span className="text-[8px] font-bold uppercase tracking-widest">Network</span>
+          <span className="text-[8px] font-bold uppercase tracking-widest">Nodes</span>
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => setActiveTab('network')}
+          className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'network' ? "text-accent scale-110" : "text-muted-foreground")}
+        >
+          <Network className="w-6 h-6" />
+          <span className="text-[8px] font-bold uppercase tracking-widest">Interface</span>
         </Button>
         <Button 
           variant="ghost" 

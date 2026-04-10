@@ -1,20 +1,21 @@
 
 "use client"
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Shield, Power, Activity, Network, Lock, Zap, ArrowDown, ArrowUp, Loader2 } from "lucide-react";
+import { Shield, Power, Activity, Lock, Zap, ArrowDown, ArrowUp, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { VpnServer } from "@/lib/mock-data";
+import { VpnServer } from "@/lib/server-data";
 
 interface ConnectionPanelProps {
   selectedServer: VpnServer | null;
+  onStatusChange?: (status: "disconnected" | "connecting" | "connected") => void;
 }
 
-export function ConnectionPanel({ selectedServer }: ConnectionPanelProps) {
+export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPanelProps) {
   const [status, setStatus] = useState<"disconnected" | "connecting" | "connected">("disconnected");
   const [torMode, setTorMode] = useState(true);
   const [killSwitch, setKillSwitch] = useState(true);
@@ -23,11 +24,11 @@ export function ConnectionPanel({ selectedServer }: ConnectionPanelProps) {
   const [uplink, setUplink] = useState(0);
   
   const handleToggle = () => {
-    if (status === "disconnected") {
-      setStatus("connecting");
-      setProgress(0);
-    } else {
-      setStatus("disconnected");
+    const nextStatus = status === "disconnected" ? "connecting" : "disconnected";
+    setStatus(nextStatus);
+    onStatusChange?.(nextStatus);
+    
+    if (nextStatus === "disconnected") {
       setProgress(0);
       setDownlink(0);
       setUplink(0);
@@ -41,23 +42,23 @@ export function ConnectionPanel({ selectedServer }: ConnectionPanelProps) {
         setProgress(prev => {
           if (prev >= 100) {
             setStatus("connected");
+            onStatusChange?.("connected");
             clearInterval(interval);
             return 100;
           }
-          return prev + 10; // Schnellere Verbindung für High-Perf Gefühl
+          return prev + 10;
         });
       }, 80);
     }
     return () => clearInterval(interval);
-  }, [status]);
+  }, [status, onStatusChange]);
 
-  // Simulierte Durchsatz-Daten
   useEffect(() => {
     let throughputInterval: any;
     if (status === "connected") {
       throughputInterval = setInterval(() => {
-        setDownlink(Math.floor(Math.random() * 80) + 120); // Hoher Durchsatz 120-200 Mbps
-        setUplink(Math.floor(Math.random() * 30) + 40); // 40-70 Mbps
+        setDownlink(Math.floor(Math.random() * 80) + 120);
+        setUplink(Math.floor(Math.random() * 30) + 40);
       }, 1000);
     }
     return () => clearInterval(throughputInterval);
@@ -182,9 +183,6 @@ export function ConnectionPanel({ selectedServer }: ConnectionPanelProps) {
                 <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Downlink</p>
               </div>
               <p className="font-code text-2xl font-black text-foreground">{downlink} <span className="text-[10px] text-muted-foreground font-normal">Mbps</span></p>
-              <div className="mt-2 w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                <div className="h-full bg-accent animate-pulse" style={{ width: '85%' }} />
-              </div>
             </div>
             <div className="p-4 rounded-xl bg-accent/5 border border-accent/10">
               <div className="flex items-center gap-2 mb-1">
@@ -192,9 +190,6 @@ export function ConnectionPanel({ selectedServer }: ConnectionPanelProps) {
                 <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Uplink</p>
               </div>
               <p className="font-code text-2xl font-black text-foreground">{uplink} <span className="text-[10px] text-muted-foreground font-normal">Mbps</span></p>
-              <div className="mt-2 w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                <div className="h-full bg-accent/40" style={{ width: '45%' }} />
-              </div>
             </div>
           </div>
         )}
