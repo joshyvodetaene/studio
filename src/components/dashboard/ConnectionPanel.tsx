@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Shield, Power, Activity, Lock, Zap, ArrowDown, ArrowUp, Loader2, Network } from "lucide-react";
+import { Shield, Power, Activity, Lock, Zap, ArrowDown, ArrowUp, Loader2, Network, ShieldCheck, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VpnServer } from "@/lib/server-data";
 
@@ -125,7 +125,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
           <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
-                <Shield className="w-4 h-4" />
+                <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
                 <Label htmlFor="full-tunnel" className="text-sm font-black block italic uppercase">Full Device Guard</Label>

@@ -19,7 +19,7 @@ export function SecurityRules() {
 
   return (
     <div className="space-y-6">
-      <Card className="glass-panel border-none">
+      <Card className="glass-panel border-none shadow-xl">
         <CardHeader>
           <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
             <Layers className="w-4 h-4 text-accent" />
@@ -59,7 +59,7 @@ export function SecurityRules() {
           <div className="p-3 rounded-xl bg-accent/5 border border-accent/10 flex items-start gap-3">
             <Shield className="w-4 h-4 text-accent shrink-0 mt-0.5" />
             <p className="text-[10px] leading-relaxed text-muted-foreground uppercase font-bold">
-              Current encryption level: <span className="text-accent">{hops[0] * 256}-bit AES/ChaCha20 Layers</span>. Each hop adds an additional encryption layer.
+              Current encryption level: <span className="text-accent">{hops[0] * 256}-bit AES/ChaCha20 Layers</span>. Each hop adds an additional encryption layer for untraceable routing.
             </p>
           </div>
         </CardContent>
