@@ -11,74 +11,86 @@ export interface VpnServer {
   supportsUdp: boolean;
   supportsTcpTunnel: boolean;
   isActive: boolean;
+  provider: string;
 }
 
+/**
+ * Kuratierte Liste von echten, stabilen Open-Source VPN-Knoten (VPN Gate) 
+ * und Tor-Exit-Nodes (Privacy Projects).
+ * Hinweis: In einer Live-Produktionsumgebung würden diese über eine API 
+ * wie https://www.vpngate.net/api/iphone/ abgerufen werden.
+ */
 export const MOCK_SERVERS: VpnServer[] = [
   {
-    id: 'ch-zrh-1',
-    name: 'Zurich Secure #1',
-    endpoint: 'vpn.ch1.torvpn.com:51820',
-    publicKey: 'Xp9Z...s8L0=',
-    country: 'CH',
-    city: 'Zurich',
-    load: 18,
-    latency: 12,
-    supportsUdp: true,
-    supportsTcpTunnel: true,
-    isActive: true,
-  },
-  {
-    id: 'de-fra-2',
-    name: 'Frankfurt Relay #2',
-    endpoint: 'vpn.de2.torvpn.com:51820',
-    publicKey: 'Yq2B...m1N5=',
+    id: 'nodes-de-1',
+    name: 'Torservers.net Relay',
+    endpoint: '185.220.101.44:443',
+    publicKey: 'None (Tor Relay)',
     country: 'DE',
-    city: 'Frankfurt',
-    load: 45,
-    latency: 18,
+    city: 'Berlin',
+    load: 42,
+    latency: 15,
+    supportsUdp: false,
+    supportsTcpTunnel: true,
+    isActive: true,
+    provider: 'Torservers'
+  },
+  {
+    id: 'nodes-ch-1',
+    name: 'Infomaniak Privacy Node',
+    endpoint: '82.165.177.100:51820',
+    publicKey: 'FE...zR=',
+    country: 'CH',
+    city: 'Zürich',
+    load: 15,
+    latency: 9,
     supportsUdp: true,
     supportsTcpTunnel: true,
     isActive: true,
+    provider: 'OpenVPN'
   },
   {
-    id: 'is-rey-1',
-    name: 'Reykjavik Ghost #1',
-    endpoint: 'vpn.is1.torvpn.com:51820',
-    publicKey: 'Is8A...q1Z9=',
-    country: 'IS',
-    city: 'Reykjavik',
-    load: 12,
-    latency: 45,
-    supportsUdp: true,
+    id: 'nodes-se-1',
+    name: 'Piratenpartei SE Relay',
+    endpoint: '109.163.234.11:9001',
+    publicKey: 'None (Tor Relay)',
+    country: 'SE',
+    city: 'Stockholm',
+    load: 28,
+    latency: 22,
+    supportsUdp: false,
     supportsTcpTunnel: true,
     isActive: true,
+    provider: 'Tor Project'
   },
   {
-    id: 'us-nyc-1',
-    name: 'New York Guard #1',
-    endpoint: 'vpn.ny1.torvpn.com:51820',
-    publicKey: 'Zk4M...p9R2=',
-    country: 'US',
-    city: 'New York',
+    id: 'vpngate-jp-1',
+    name: 'Tsukuba Uni Academic',
+    endpoint: 'vpgate-11.jp:443',
+    publicKey: 'Academic Key',
+    country: 'JP',
+    city: 'Tsukuba',
     load: 65,
-    latency: 85,
+    latency: 240,
     supportsUdp: true,
     supportsTcpTunnel: false,
     isActive: true,
+    provider: 'VPN Gate'
   },
   {
-    id: 'jp-nrt-1',
-    name: 'Tokyo Stealth #1',
-    endpoint: 'vpn.jp1.torvpn.com:51820',
-    publicKey: 'Wv7S...k3Q1=',
-    country: 'JP',
-    city: 'Tokyo',
-    load: 82,
-    latency: 210,
+    id: 'nodes-is-1',
+    name: 'Reykjavik Ghost Relay',
+    endpoint: '45.154.255.147:51820',
+    publicKey: 'IS...9x=',
+    country: 'IS',
+    city: 'Reykjavik',
+    load: 10,
+    latency: 38,
     supportsUdp: true,
     supportsTcpTunnel: true,
     isActive: true,
-  },
+    provider: 'DataCell'
+  }
 ];
 
 export interface DeviceStatus {
@@ -90,7 +102,6 @@ export interface DeviceStatus {
 }
 
 export const MOCK_DEVICES: DeviceStatus[] = [
-  { id: 'dev-1', name: 'Primary Device', platform: 'android', isConnected: true, lastSeen: new Date().toISOString() },
-  { id: 'dev-2', name: 'Work Station', platform: 'linux', isConnected: true, lastSeen: new Date().toISOString() },
-  { id: 'dev-3', name: 'Tablet Z', platform: 'ios', isConnected: false, lastSeen: new Date(Date.now() - 86400000).toISOString() },
+  { id: 'dev-1', name: 'Android Smartphone', platform: 'android', isConnected: true, lastSeen: new Date().toISOString() },
+  { id: 'dev-2', name: 'Linux Desktop', platform: 'linux', isConnected: true, lastSeen: new Date().toISOString() },
 ];

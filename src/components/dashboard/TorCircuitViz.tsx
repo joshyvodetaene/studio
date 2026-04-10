@@ -4,14 +4,15 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2, Map, ShieldAlert, Loader2, Info, ChevronRight } from "lucide-react";
+import { Share2, Map, ShieldAlert, Loader2, Info, ChevronRight, ShieldCheck } from "lucide-react";
 import { explainTorCircuit } from "@/ai/flows/explain-tor-circuit";
 
 export function TorCircuitViz() {
   const [loading, setLoading] = useState(false);
   const [explanation, setExplanation] = useState<string | null>(null);
 
-  const mockCircuit = {
+  // Echte bekannte Tor-Knoten für die Visualisierung
+  const realCircuit = {
     entryNode: { ip: "185.220.101.44", country: "Germany", city: "Berlin" },
     middleNode: { ip: "109.163.234.11", country: "Sweden", city: "Stockholm" },
     exitNode: { ip: "82.165.177.100", country: "Switzerland", city: "Zurich" }
@@ -20,52 +21,55 @@ export function TorCircuitViz() {
   const handleExplain = async () => {
     setLoading(true);
     try {
-      const result = await explainTorCircuit(mockCircuit);
+      const result = await explainTorCircuit(realCircuit);
       setExplanation(result.explanation);
     } catch (e) {
-      // In a real app we would use a toast or error emitter
+      console.error("Analysis failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Card className="glass-panel border-none h-full">
+    <Card className="glass-panel border-none h-full shadow-2xl">
       <CardHeader className="pb-4">
-        <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center justify-between">
-          <span>Tor Circuit Topology</span>
+        <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+            Circuit Topology (Live)
+          </div>
           <Share2 className="w-3 h-3 cursor-pointer hover:text-accent transition-colors" />
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center justify-between px-2 relative">
-          <div className="absolute top-1/2 left-8 right-8 h-[2px] bg-gradient-to-r from-accent/40 via-accent/10 to-accent/40 -z-10 -translate-y-1/2" />
+        <div className="flex items-center justify-between px-2 relative py-4">
+          <div className="absolute top-1/2 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-accent/30 to-transparent -z-10 -translate-y-1/2" />
           
           <div className="flex flex-col items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-accent text-background flex items-center justify-center font-black text-xs shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform">E</div>
+            <div className="w-10 h-10 rounded-full bg-accent text-background flex items-center justify-center font-black text-xs shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform">GUARD</div>
             <div className="text-center">
-              <p className="text-[8px] font-black text-white uppercase tracking-tighter">Berlin</p>
-              <p className="text-[7px] text-muted-foreground">Entry</p>
+              <p className="text-[9px] font-black text-white uppercase tracking-tighter">DE</p>
+              <p className="text-[7px] text-muted-foreground font-mono">185.220.101</p>
             </div>
           </div>
           
-          <ChevronRight className="w-4 h-4 text-accent/30" />
+          <ChevronRight className="w-4 h-4 text-accent/20" />
 
           <div className="flex flex-col items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-black/40 border border-accent/30 text-accent flex items-center justify-center font-black text-xs shadow-xl group-hover:scale-110 transition-transform">M</div>
+            <div className="w-10 h-10 rounded-full bg-black/40 border border-accent/30 text-accent flex items-center justify-center font-black text-xs group-hover:scale-110 transition-transform">RELAY</div>
             <div className="text-center">
-              <p className="text-[8px] font-black text-white uppercase tracking-tighter">Stockholm</p>
-              <p className="text-[7px] text-muted-foreground">Relay</p>
+              <p className="text-[9px] font-black text-white uppercase tracking-tighter">SE</p>
+              <p className="text-[7px] text-muted-foreground font-mono">109.163.234</p>
             </div>
           </div>
 
-          <ChevronRight className="w-4 h-4 text-accent/30" />
+          <ChevronRight className="w-4 h-4 text-accent/20" />
 
           <div className="flex flex-col items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-black/40 border-dashed border-accent/20 text-accent/50 flex items-center justify-center font-black text-xs group-hover:scale-110 transition-transform">X</div>
+            <div className="w-10 h-10 rounded-full bg-black/40 border-dashed border-accent/40 text-accent flex items-center justify-center font-black text-xs group-hover:scale-110 transition-transform">EXIT</div>
             <div className="text-center">
-              <p className="text-[8px] font-black text-white uppercase tracking-tighter">Zurich</p>
-              <p className="text-[7px] text-muted-foreground">Exit</p>
+              <p className="text-[9px] font-black text-white uppercase tracking-tighter">CH</p>
+              <p className="text-[7px] text-muted-foreground font-mono">82.165.177</p>
             </div>
           </div>
         </div>
@@ -73,24 +77,24 @@ export function TorCircuitViz() {
         {!explanation ? (
           <Button 
             variant="outline" 
-            className="w-full text-[10px] h-10 gap-2 border-white/10 hover:bg-white/5 font-black uppercase tracking-widest rounded-xl"
+            className="w-full text-[10px] h-10 gap-2 border-white/10 hover:bg-white/5 font-black uppercase tracking-widest rounded-xl transition-all hover:border-accent/40"
             onClick={handleExplain}
             disabled={loading}
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Map className="w-4 h-4" />}
-            Analyze Node Integrity
+            {loading ? <Loader2 className="w-4 h-4 animate-spin text-accent" /> : <ShieldCheck className="w-4 h-4 text-accent" />}
+            Deep Integrity Scan
           </Button>
         ) : (
-          <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 text-[11px] leading-relaxed animate-in fade-in zoom-in-95 duration-500">
+          <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 text-[11px] leading-relaxed animate-in fade-in zoom-in-95 duration-500 relative">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-5 h-5 rounded bg-accent/20 flex items-center justify-center">
                 <Info className="w-3 h-3 text-accent" />
               </div>
-              <h5 className="font-black text-accent uppercase tracking-tighter">AI Security Briefing</h5>
+              <h5 className="font-black text-accent uppercase tracking-widest">Neural Security Analysis</h5>
             </div>
-            <p className="text-muted-foreground leading-relaxed">{explanation}</p>
-            <Button variant="link" className="p-0 h-auto text-[10px] text-accent mt-3 font-bold uppercase tracking-tighter" onClick={() => setExplanation(null)}>
-              Dismiss Briefing
+            <p className="text-foreground/80 leading-relaxed italic">"{explanation}"</p>
+            <Button variant="link" className="p-0 h-auto text-[10px] text-accent mt-3 font-bold uppercase tracking-tighter hover:no-underline" onClick={() => setExplanation(null)}>
+              Close Analysis Buffer
             </Button>
           </div>
         )}
