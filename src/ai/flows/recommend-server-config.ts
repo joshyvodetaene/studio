@@ -1,64 +1,52 @@
 'use server';
 /**
  * @fileOverview This file implements a Genkit flow for recommending the most optimal VPN server
- * based on user needs using local mock data for a standalone experience.
- *
- * - recommendServerConfig - A function that handles the server recommendation process.
- * - RecommendServerConfigInput - The input type for the recommendServerConfig function.
- * - RecommendServerConfigOutput - The return type for the recommendServerConfig function.
+ * based on user needs, prioritizing High-Performance and Bandwidth.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import {MOCK_SERVERS} from '@/lib/mock-data';
 
-// Define input schema
 const RecommendServerConfigInputSchema = z.object({
-  vpnNeeds: z.string().describe('A description of the user\'s VPN needs (e.g., "fastest connection for streaming", "maximum privacy").'),
+  vpnNeeds: z.string().describe('User description of VPN needs. Focus on "Performance", "Speed", "Latency".'),
   clientPublicKey: z.string().describe('The WireGuard client public key.'),
-  idToken: z.string().optional(),
-  uid: z.string().optional(),
 });
 export type RecommendServerConfigInput = z.infer<typeof RecommendServerConfigInputSchema>;
 
-// Define output schema for the prompt part
 const PromptOutputSchema = z.object({
-  recommendedServerId: z.string().describe('The ID of the recommended VPN server.'),
-  explanation: z.string().describe('A brief explanation of why this server was recommended.'),
+  recommendedServerId: z.string().describe('The ID of the recommended High-Performance VPN server.'),
+  explanation: z.string().describe('A brief explanation focusing on bandwidth and throughput benefits.'),
 });
 
-// Define output schema for the entire flow
 const RecommendServerConfigOutputSchema = z.object({
   recommendedServerId: z.string().describe('The ID of the recommended VPN server.'),
-  explanation: z.string().describe('A brief explanation of why this server was recommended.'),
+  explanation: z.string().describe('A brief explanation of the recommendation.'),
   wireguardConfigDetails: z.object({
-    serverEndpoint: z.string().describe('The endpoint of the recommended VPN server.'),
-    serverPublicKey: z.string().describe('The public key of the recommended VPN server.'),
-    clientAddress: z.string().describe('The client IP address allocated for the user.'),
-    dns: z.array(z.string()).describe('DNS servers to be used by the client.'),
+    serverEndpoint: z.string().describe('The endpoint of the server.'),
+    serverPublicKey: z.string().describe('The public key of the server.'),
+    clientAddress: z.string().describe('Client IP.'),
+    dns: z.array(z.string()).describe('DNS servers.'),
   }),
 });
 export type RecommendServerConfigOutput = z.infer<typeof RecommendServerConfigOutputSchema>;
 
-// Genkit prompt definition
 const recommendServerPrompt = ai.definePrompt({
   name: 'recommendServerPrompt',
-  input: {schema: RecommendServerConfigInputSchema.pick({vpnNeeds: true}).extend({serversJson: z.string()})},
+  input: {schema: z.object({vpnNeeds: z.string(), serversJson: z.string()})},
   output: {schema: PromptOutputSchema},
-  prompt: `You are an intelligent VPN server recommender.
-Analyze the user's needs and select the best server from the list.
+  prompt: `You are a Network Performance Engineer.
+Select the server that provides the MAX THROUGHPUT and MIN LATENCY for the following needs.
 
 User's Needs: "{{{vpnNeeds}}}"
 
-Available Servers:
+Available Performance Nodes:
 {{{serversJson}}}
 
-Output a JSON object with:
-- recommendedServerId: string
-- explanation: string (concise)`,
+Prioritize nodes with the highest "bandwidth" and lowest "latency".
+Output a JSON object with recommendedServerId and explanation.`,
 });
 
-// Genkit flow definition using local mock data for standalone operation
 const recommendServerConfigFlow = ai.defineFlow(
   {
     name: 'recommendServerConfigFlow',
@@ -66,7 +54,6 @@ const recommendServerConfigFlow = ai.defineFlow(
     outputSchema: RecommendServerConfigOutputSchema,
   },
   async (input) => {
-    // Use local mock servers for a standalone experience
     const availableServers = MOCK_SERVERS;
 
     const { output } = await recommendServerPrompt({
@@ -75,23 +62,22 @@ const recommendServerConfigFlow = ai.defineFlow(
     });
 
     if (!output?.recommendedServerId) {
-      throw new Error('AI failed to recommend a server.');
+      throw new Error('AI failed to recommend a high-performance node.');
     }
 
     const recommendedServer = availableServers.find(s => s.id === output.recommendedServerId);
 
     if (!recommendedServer) {
-      throw new Error('Recommended server not found in local list.');
+      throw new Error('Recommended performance node not found.');
     }
 
-    // Mock config generation for standalone mode
     return {
       recommendedServerId: output.recommendedServerId,
       explanation: output.explanation,
       wireguardConfigDetails: {
         serverEndpoint: recommendedServer.endpoint,
         serverPublicKey: recommendedServer.publicKey,
-        clientAddress: '10.0.0.2/32',
+        clientAddress: '10.8.0.2/32',
         dns: ['1.1.1.1', '8.8.8.8'],
       },
     };

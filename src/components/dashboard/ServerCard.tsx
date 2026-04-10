@@ -1,10 +1,9 @@
-
 "use client"
 
 import { VpnServer } from "@/lib/mock-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Signal, Globe, Zap, ShieldCheck } from "lucide-react";
+import { Signal, Globe, Zap, ShieldCheck, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ServerCardProps {
@@ -26,41 +25,42 @@ export function ServerCard({ server, isSelected, onSelect }: ServerCardProps) {
   return (
     <Card 
       className={cn(
-        "cursor-pointer transition-all duration-300 hover:border-accent group relative overflow-hidden",
-        isSelected ? "border-accent ring-1 ring-accent bg-accent/5" : "bg-card/50 border-white/5"
+        "cursor-pointer transition-all duration-200 hover:border-accent group relative overflow-hidden border-none",
+        isSelected ? "bg-accent/10 ring-2 ring-accent" : "bg-white/5 hover:bg-white/10"
       )}
       onClick={() => onSelect(server)}
     >
-      <CardContent className="p-4 flex items-center justify-between">
+      <CardContent className="p-4 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-inner border border-white/5">
+          <div className="w-12 h-12 rounded-2xl bg-black/40 flex items-center justify-center text-2xl border border-white/10 shadow-inner">
             {getFlag(server.country)}
           </div>
           <div>
-            <h3 className="font-bold text-sm tracking-tight">{server.name}</h3>
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">{server.city}, {server.country}</p>
+            <h3 className="font-black text-sm tracking-tight italic uppercase">{server.name}</h3>
+            <div className="flex items-center gap-2 mt-0.5">
+              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{server.city}</p>
+              <span className="text-[9px] text-accent font-mono bg-accent/10 px-1.5 rounded-md border border-accent/20">{server.bandwidth}</span>
+            </div>
           </div>
         </div>
         
-        <div className="flex items-center gap-6">
-          <div className="hidden sm:flex flex-col items-end gap-1">
-            <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-mono">
-              <Signal className="w-3 h-3 text-accent" />
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col items-end gap-1.5">
+            <div className="flex items-center gap-1.5 text-[10px] text-foreground font-mono font-bold">
+              <Activity className="w-3 h-3 text-accent" />
               <span>{server.latency}ms</span>
             </div>
-            <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-mono">
-              <Zap className="w-3 h-3 text-yellow-500" />
-              <span>{server.load}% LOAD</span>
+            <div className="w-20 h-1 bg-white/5 rounded-full overflow-hidden">
+              <div className={cn("h-full transition-all duration-500", loadColor)} style={{ width: `${server.load}%` }} />
             </div>
           </div>
           
-          <div className="flex flex-col gap-1 items-end">
-            {server.supportsTcpTunnel && (
-              <Badge variant="outline" className="text-[9px] py-0 px-1.5 border-accent/30 text-accent bg-accent/5 font-black uppercase tracking-tighter">
-                Tor Ready
-              </Badge>
+          <div className="flex flex-col gap-1 items-center justify-center">
+            {isSelected ? (
+              <Zap className="w-4 h-4 text-accent fill-accent animate-pulse" />
+            ) : (
+              <div className={cn("w-2 h-2 rounded-full", loadColor)} />
             )}
-            <div className={cn("w-1.5 h-1.5 rounded-full shadow-[0_0_8px] shadow-current transition-colors", loadColor)} />
           </div>
         </div>
       </CardContent>
