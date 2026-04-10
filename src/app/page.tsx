@@ -1,8 +1,7 @@
-
 "use client"
 
 import { useState, useEffect } from "react";
-import { PRODUCTION_SERVERS, VpnServer } from "@/lib/mock-data";
+import { PRODUCTION_SERVERS, VpnServer } from "@/lib/server-data";
 import { ServerCard } from "@/components/dashboard/ServerCard";
 import { ConnectionPanel } from "@/components/dashboard/ConnectionPanel";
 import { DeviceList } from "@/components/dashboard/DeviceList";
@@ -34,11 +33,9 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-[#050A14] safe-top relative">
-      {/* Background Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* Sidebar - Desktop */}
       <aside className="w-20 hidden md:flex flex-col items-center py-8 border-r border-white/5 gap-8 bg-black/40 backdrop-blur-xl z-20">
         <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center text-background shadow-lg shadow-accent/20">
           <Shield className="w-7 h-7" />
@@ -78,10 +75,7 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-full overflow-hidden pb-20 md:pb-0 z-10">
-        
-        {/* Header */}
         <header className="px-6 py-4 flex items-center justify-between bg-black/20 backdrop-blur-md border-b border-white/5">
           <div>
             <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-accent">Torro <span className="text-white">PRO</span></h1>
@@ -107,7 +101,6 @@ export default function Dashboard() {
         <div className="flex-1 overflow-hidden">
           <ScrollArea className="h-full px-4 md:px-8 py-6">
             <div className="max-w-7xl mx-auto space-y-8 pb-10">
-              
               {activeTab === 'home' && (
                 <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="xl:col-span-4 lg:sticky lg:top-0">
@@ -166,7 +159,6 @@ export default function Dashboard() {
         </div>
       </main>
 
-      {/* Bottom Navigation - Mobile */}
       <nav className="fixed bottom-0 left-0 right-0 h-20 bg-black/60 backdrop-blur-2xl border-t border-white/5 flex md:hidden items-center justify-around px-8 safe-bottom z-30">
         <Button 
           variant="ghost" 

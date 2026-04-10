@@ -1,12 +1,12 @@
-
 "use client"
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Share2, Loader2, Info, ChevronRight, ShieldCheck } from "lucide-react";
-import { PRODUCTION_SERVERS } from "@/lib/mock-data";
+import { PRODUCTION_SERVERS } from "@/lib/server-data";
 import { useToast } from "@/hooks/use-toast";
+import { analyzeTorCircuit } from "@/lib/services/network-engine";
 
 export function TorCircuitViz() {
   const [loading, setLoading] = useState(false);
@@ -31,26 +31,22 @@ export function TorCircuitViz() {
     }
   };
 
-  const simulateExplain = async () => {
-    // Local Analysis Logic for high performance and compatibility
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return `Dieser Tor-Circuit nutzt drei verschlüsselte Hops für maximale Anonymität. Der Guard-Knoten in ${realCircuit.entryNode.city} verbirgt Ihre reale IP vor dem Netzwerk. Der Relay in ${realCircuit.middleNode.city} verschleiert den Pfad weiter, sodass kein Knoten den gesamten Weg kennt. Der Exit-Knoten in ${realCircuit.exitNode.city} stellt die finale Verbindung zum Ziel her. Ihre Identität bleibt durch diese Architektur vollständig geschützt.`;
-  };
-
   const handleExplain = async () => {
     setLoading(true);
-    try {
-      const result = await simulateExplain();
-      setExplanation(result);
-    } catch (e) {
-      toast({
-        variant: "destructive",
-        title: "Matrix-Timeout",
-        description: "Lokale Analyse verzögert."
-      });
-    } finally {
-      setLoading(false);
-    }
+    setTimeout(() => {
+      try {
+        const result = analyzeTorCircuit(realCircuit);
+        setExplanation(result);
+      } catch (e) {
+        toast({
+          variant: "destructive",
+          title: "Matrix-Timeout",
+          description: "Lokale Analyse verzögert."
+        });
+      } finally {
+        setLoading(false);
+      }
+    }, 1000);
   };
 
   return (

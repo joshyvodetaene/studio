@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react";
@@ -7,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Textarea } from "@/components/ui/textarea";
 import { Download, Wand2, Terminal, Loader2, Check, Copy, RefreshCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { PRODUCTION_SERVERS } from "@/lib/mock-data";
+import { recommendOptimalNode } from "@/lib/services/network-engine";
 
 export function ConfigTool() {
   const [needs, setNeeds] = useState("");
@@ -15,53 +14,29 @@ export function ConfigTool() {
   const [config, setConfig] = useState<any>(null);
   const { toast } = useToast();
 
-  const simulateRecommendation = async (input: string) => {
-    // Local High-Performance Analysis Logic
-    // This replaces the Genkit flow for the static APK build to ensure offline capability
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const isAnonymityRequested = input.toLowerCase().includes('anonym') || input.toLowerCase().includes('privacy');
-    const isSpeedRequested = input.toLowerCase().includes('fast') || input.toLowerCase().includes('stream') || input.toLowerCase().includes('speed');
-    
-    let recommendedServer = PRODUCTION_SERVERS[0];
-    
-    if (isAnonymityRequested) {
-      recommendedServer = PRODUCTION_SERVERS.find(s => s.provider === 'Infomaniak' || s.provider === 'Torservers.net') || PRODUCTION_SERVERS[1];
-    } else if (isSpeedRequested) {
-      recommendedServer = PRODUCTION_SERVERS.find(s => s.bandwidth.includes('40') || s.bandwidth.includes('100')) || PRODUCTION_SERVERS[3];
-    }
-
-    return {
-      recommendedServerId: recommendedServer.id,
-      explanation: `Matrix-Analyse abgeschlossen: Basierend auf Ihren Parametern wurde der Knoten "${recommendedServer.name}" in ${recommendedServer.city} ausgewählt. Dieser Endpunkt bietet ${recommendedServer.bandwidth} Backbone-Kapazität und nutzt ${recommendedServer.provider}-Infrastruktur für maximale Integrität.`,
-      wireguardConfigDetails: {
-        serverEndpoint: recommendedServer.endpoint,
-        serverPublicKey: recommendedServer.publicKey,
-        clientAddress: '10.8.0.2/32',
-        dns: ['1.1.1.1', '8.8.8.8'],
-      }
-    };
-  };
-
   const handleGenerate = async () => {
     if (!needs) return;
     setLoading(true);
-    try {
-      const result = await simulateRecommendation(needs);
-      setConfig(result);
-      toast({
-        title: "Neural Engine Sync Complete",
-        description: `Recommended node: ${result.recommendedServerId}`
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Synthesis Failed",
-        description: "Anonymity layer handshake timed out."
-      });
-    } finally {
-      setLoading(false);
-    }
+    
+    // Künstlicher Delay für das High-Performance-Gefühl der "Neural Engine"
+    setTimeout(() => {
+      try {
+        const result = recommendOptimalNode(needs);
+        setConfig(result);
+        toast({
+          title: "Neural Engine Sync Complete",
+          description: `Recommended node: ${result.recommendedServerId}`
+        });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Synthesis Failed",
+          description: "Anonymity layer handshake timed out."
+        });
+      } finally {
+        setLoading(false);
+      }
+    }, 1500);
   };
 
   const copyToClipboard = (text: string) => {

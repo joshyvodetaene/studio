@@ -34,7 +34,6 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # Falls der Android-Ordner noch nicht existiert (lokal erstellt aber nicht gepusht), versuchen wir ihn zu initialisieren
           if [ ! -d "android" ]; then
             npx cap add android
           fi
