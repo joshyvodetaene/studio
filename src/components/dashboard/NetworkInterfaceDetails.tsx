@@ -2,9 +2,10 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Network, Server, Fingerprint, Database, Cpu, Activity, ShieldCheck, Wifi } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { Network, Server, Fingerprint, Database, Cpu, Activity, ShieldCheck, Wifi, SlidersHorizontal, Info } from "lucide-react";
 import { VpnServer } from "@/lib/server-data";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,7 @@ export function NetworkInterfaceDetails({ isConnected, selectedServer }: Network
     uptime: "00:00:00",
     localIp: "192.168.178.45",
   });
+  const [mtu, setMtu] = useState(1420);
 
   useEffect(() => {
     let interval: any;
@@ -69,72 +71,115 @@ export function NetworkInterfaceDetails({ isConnected, selectedServer }: Network
         <Card className="glass-panel border-none">
           <CardHeader className="p-4">
             <CardTitle className="text-[10px] font-black uppercase text-muted-foreground flex items-center gap-2">
-              <Database className="w-3 h-3 text-accent" /> Protocol MTU
+              <Database className="w-3 h-3 text-accent" /> Current MTU
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 pb-4">
-            <p className="text-xl font-mono font-bold text-white">1420</p>
+            <p className="text-xl font-mono font-bold text-white">{mtu}</p>
             <p className="text-[9px] text-muted-foreground uppercase font-black mt-1">Optimized for WireGuard</p>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="glass-panel border-none">
-        <CardHeader>
-          <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
-            <Network className="w-4 h-4 text-accent" />
-            Layer 3 / Layer 4 Details
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-              <p className="text-[9px] font-black text-muted-foreground uppercase mb-2">Local Interface IP</p>
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-sm">{stats.localIp}</span>
-                <Badge variant="outline" className="text-[8px] uppercase border-white/20">WLAN0</Badge>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <Card className="glass-panel border-none">
+            <CardHeader>
+              <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                <Network className="w-4 h-4 text-accent" />
+                Layer 3 / Layer 4 Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+                  <p className="text-[9px] font-black text-muted-foreground uppercase mb-2">Local Interface IP</p>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-sm">{stats.localIp}</span>
+                    <Badge variant="outline" className="text-[8px] uppercase border-white/20">WLAN0</Badge>
+                  </div>
+                </div>
+                
+                <div className="p-4 rounded-xl bg-accent/5 border border-accent/10">
+                  <p className="text-[9px] font-black text-accent uppercase mb-2">Tunnel Endpoint IP</p>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-sm text-accent">{isConnected ? selectedServer?.endpoint.split(':')[0] : "---.---.---.---"}</span>
+                    {isConnected && <ShieldCheck className="w-4 h-4 text-accent" />}
+                  </div>
+                </div>
               </div>
-            </div>
-            
-            <div className="p-4 rounded-xl bg-accent/5 border border-accent/10">
-              <p className="text-[9px] font-black text-accent uppercase mb-2">Tunnel Endpoint IP</p>
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-sm text-accent">{isConnected ? selectedServer?.endpoint.split(':')[0] : "---.---.---.---"}</span>
-                {isConnected && <ShieldCheck className="w-4 h-4 text-accent" />}
-              </div>
-            </div>
-          </div>
 
-          <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-4">
-            <div className="flex items-center justify-between border-b border-white/5 pb-2">
-              <div className="flex items-center gap-2">
-                <Cpu className="w-3 h-3 text-muted-foreground" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Encryption Cipher</span>
+              <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-4">
+                <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                  <div className="flex items-center gap-2">
+                    <Cpu className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Encryption Cipher</span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-accent">ChaCha20-Poly1305</span>
+                </div>
+                
+                <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                  <div className="flex items-center gap-2">
+                    <Wifi className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Handshake Interval</span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-white">120 Seconds</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div>
+                    <p className="text-[9px] text-muted-foreground uppercase font-black">Packets Inbound</p>
+                    <p className="text-lg font-mono font-bold">{stats.packetsIn.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] text-muted-foreground uppercase font-black">Packets Outbound</p>
+                    <p className="text-lg font-mono font-bold">{stats.packetsOut.toLocaleString()}</p>
+                  </div>
+                </div>
               </div>
-              <span className="text-[10px] font-mono font-bold text-accent">ChaCha20-Poly1305</span>
-            </div>
-            
-            <div className="flex items-center justify-between border-b border-white/5 pb-2">
-              <div className="flex items-center gap-2">
-                <Wifi className="w-3 h-3 text-muted-foreground" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Handshake Interval</span>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card className="glass-panel border-none">
+          <CardHeader>
+            <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+              <SlidersHorizontal className="w-4 h-4 text-accent" />
+              MTU Optimizer
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <p className="text-[10px] font-black text-muted-foreground uppercase">Target MTU Size</p>
+                <span className="font-mono text-sm text-accent font-bold">{mtu}</span>
               </div>
-              <span className="text-[10px] font-mono font-bold text-white">120 Seconds</span>
+              <Slider 
+                value={[mtu]} 
+                min={1200} 
+                max={1500} 
+                step={10} 
+                onValueChange={(val) => setMtu(val[0])}
+                className="py-4"
+              />
+              <div className="flex justify-between text-[8px] font-mono text-muted-foreground">
+                <span>1200 (Safe)</span>
+                <span>1500 (Max)</span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 pt-2">
-              <div>
-                <p className="text-[9px] text-muted-foreground uppercase font-black">Packets Inbound</p>
-                <p className="text-lg font-mono font-bold">{stats.packetsIn.toLocaleString()}</p>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-2">
+              <div className="flex items-center gap-2 text-accent">
+                <Info className="w-3 h-3" />
+                <p className="text-[9px] font-black uppercase tracking-tighter">Optimization Tip</p>
               </div>
-              <div>
-                <p className="text-[9px] text-muted-foreground uppercase font-black">Packets Outbound</p>
-                <p className="text-lg font-mono font-bold">{stats.packetsOut.toLocaleString()}</p>
-              </div>
+              <p className="text-[10px] leading-relaxed text-muted-foreground">
+                Lower MTU (1280-1350) is recommended for unstable mobile LTE/5G connections to reduce fragmentation.
+              </p>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

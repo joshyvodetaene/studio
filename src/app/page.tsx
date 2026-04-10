@@ -9,26 +9,41 @@ import { DeviceList } from "@/components/dashboard/DeviceList";
 import { TorCircuitViz } from "@/components/dashboard/TorCircuitViz";
 import { ConfigTool } from "@/components/dashboard/ConfigTool";
 import { NetworkInterfaceDetails } from "@/components/dashboard/NetworkInterfaceDetails";
+import { TerminalLog } from "@/components/dashboard/TerminalLog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
+  const [servers, setServers] = useState<VpnServer[]>(PRODUCTION_SERVERS);
   const [selectedServer, setSelectedServer] = useState<VpnServer | null>(PRODUCTION_SERVERS[0]);
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'config' | 'network'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'config' | 'network' | 'terminal'>('home');
   const [connectionStatus, setConnectionStatus] = useState<"disconnected" | "connecting" | "connected">("disconnected");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    
+    // Auto-Latency-Sort Background Process
+    const interval = setInterval(() => {
+      setServers(prev => {
+        const updated = prev.map(s => ({
+          ...s,
+          latency: Math.max(5, Math.floor(s.latency + (Math.random() * 6 - 3)))
+        }));
+        return [...updated].sort((a, b) => a.latency - b.latency);
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (!mounted) return null;
 
-  const filteredServers = PRODUCTION_SERVERS.filter(s => 
+  const filteredServers = servers.filter(s => 
     s.name.toLowerCase().includes(search.toLowerCase()) || 
     s.city.toLowerCase().includes(search.toLowerCase()) ||
     s.provider.toLowerCase().includes(search.toLowerCase())
@@ -73,6 +88,14 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             size="icon" 
+            onClick={() => setActiveTab('terminal')}
+            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'terminal' ? "text-accent bg-accent/10" : "text-muted-foreground")}
+          >
+            <Terminal className="w-6 h-6" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon" 
             onClick={() => setActiveTab('config')}
             className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'config' ? "text-accent bg-accent/10" : "text-muted-foreground")}
           >
@@ -112,18 +135,22 @@ export default function Dashboard() {
             
             {/* Dynamic Status Icon */}
             <div className={cn(
-              "flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all duration-500",
+              "flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all duration-500 group relative",
               connectionStatus === 'connected' 
-                ? "bg-accent/10 border-accent/40 text-accent shadow-[0_0_15px_rgba(71,208,235,0.2)]" 
+                ? "bg-accent/10 border-accent/40 text-accent shadow-[0_0_20px_rgba(71,208,235,0.3)]" 
                 : "bg-white/5 border-white/10 text-muted-foreground"
             )}>
+              <div className={cn(
+                "absolute inset-0 rounded-xl bg-accent/20 blur-md transition-opacity duration-1000",
+                connectionStatus === 'connected' ? "opacity-100" : "opacity-0"
+              )} />
               {connectionStatus === 'connected' ? (
-                <ShieldCheck className="w-5 h-5 animate-pulse" />
+                <ShieldCheck className="w-5 h-5 animate-pulse relative z-10" />
               ) : (
-                <ShieldAlert className="w-5 h-5 text-destructive/60" />
+                <ShieldAlert className="w-5 h-5 text-destructive/60 relative z-10" />
               )}
-              <span className="hidden sm:inline text-[10px] font-black uppercase tracking-tighter italic">
-                {connectionStatus === 'connected' ? "TUNNEL ACTIVE" : "UNPROTECTED"}
+              <span className="hidden sm:inline text-[10px] font-black uppercase tracking-tighter italic relative z-10">
+                {connectionStatus === 'connected' ? "ENCRYPTED" : "UNPROTECTED"}
               </span>
             </div>
 
@@ -149,6 +176,9 @@ export default function Dashboard() {
                       <TorCircuitViz />
                       <DeviceList />
                     </div>
+                    <div className="h-[200px]">
+                      <TerminalLog isActive={connectionStatus === 'connected'} />
+                    </div>
                     <div className="p-5 rounded-2xl glass-panel flex flex-col sm:flex-row items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
                         <Activity className="w-8 h-8 text-accent/50" />
@@ -168,7 +198,7 @@ export default function Dashboard() {
               {activeTab === 'servers' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Network Infrastructure</h2>
+                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Network Infrastructure <span className="text-accent/40 font-mono ml-2">(Sorted by Latency)</span></h2>
                     <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full border border-accent/20">{filteredServers.length} Active Endpoints</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -193,6 +223,12 @@ export default function Dashboard() {
                 </div>
               )}
 
+              {activeTab === 'terminal' && (
+                <div className="h-[600px] animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <TerminalLog isActive={connectionStatus === 'connected'} />
+                </div>
+              )}
+
               {activeTab === 'config' && (
                 <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <ConfigTool />
@@ -204,15 +240,15 @@ export default function Dashboard() {
       </main>
 
       {/* Mobile Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-black/60 backdrop-blur-2xl border-t border-white/5 flex md:hidden items-center justify-around px-8 safe-bottom z-30">
+      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-black/60 backdrop-blur-2xl border-t border-white/5 flex md:hidden items-center justify-around px-4 safe-bottom z-30">
         <Button 
           variant="ghost" 
           size="icon" 
           onClick={() => setActiveTab('home')}
           className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'home' ? "text-accent scale-110" : "text-muted-foreground")}
         >
-          <LayoutDashboard className="w-6 h-6" />
-          <span className="text-[8px] font-bold uppercase tracking-widest">Dash</span>
+          <LayoutDashboard className="w-5 h-5" />
+          <span className="text-[7px] font-bold uppercase tracking-widest">Dash</span>
         </Button>
         <Button 
           variant="ghost" 
@@ -220,8 +256,8 @@ export default function Dashboard() {
           onClick={() => setActiveTab('servers')}
           className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'servers' ? "text-accent scale-110" : "text-muted-foreground")}
         >
-          <Globe className="w-6 h-6" />
-          <span className="text-[8px] font-bold uppercase tracking-widest">Nodes</span>
+          <Globe className="w-5 h-5" />
+          <span className="text-[7px] font-bold uppercase tracking-widest">Nodes</span>
         </Button>
         <Button 
           variant="ghost" 
@@ -229,8 +265,17 @@ export default function Dashboard() {
           onClick={() => setActiveTab('network')}
           className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'network' ? "text-accent scale-110" : "text-muted-foreground")}
         >
-          <Network className="w-6 h-6" />
-          <span className="text-[8px] font-bold uppercase tracking-widest">Interface</span>
+          <Network className="w-5 h-5" />
+          <span className="text-[7px] font-bold uppercase tracking-widest">Net</span>
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => setActiveTab('terminal')}
+          className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'terminal' ? "text-accent scale-110" : "text-muted-foreground")}
+        >
+          <Terminal className="w-5 h-5" />
+          <span className="text-[7px] font-bold uppercase tracking-widest">Log</span>
         </Button>
         <Button 
           variant="ghost" 
@@ -238,8 +283,8 @@ export default function Dashboard() {
           onClick={() => setActiveTab('config')}
           className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'config' ? "text-accent scale-110" : "text-muted-foreground")}
         >
-          <Settings className="w-6 h-6" />
-          <span className="text-[8px] font-bold uppercase tracking-widest">Config</span>
+          <Settings className="w-5 h-5" />
+          <span className="text-[7px] font-bold uppercase tracking-widest">Set</span>
         </Button>
       </nav>
     </div>
