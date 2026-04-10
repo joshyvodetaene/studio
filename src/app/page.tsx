@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react";
@@ -83,10 +84,10 @@ export default function Dashboard() {
         {/* Header */}
         <header className="px-6 py-4 flex items-center justify-between bg-black/20 backdrop-blur-md border-b border-white/5">
           <div>
-            <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-accent">TorVPN <span className="text-white">PRO</span></h1>
+            <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-accent">Torro <span className="text-white">PRO</span></h1>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Global Network Online</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Secure Network Live</p>
             </div>
           </div>
           <div className="relative group hidden sm:block">
@@ -126,7 +127,7 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <span className="px-3 py-1 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-tighter italic">V3-PRO Enabled</span>
+                        <span className="px-3 py-1 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-tighter italic">Torro-V1 Enabled</span>
                       </div>
                     </div>
                   </div>
@@ -136,7 +137,7 @@ export default function Dashboard() {
               {activeTab === 'servers' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Production Infrastructure</h2>
+                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Network Infrastructure</h2>
                     <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full border border-accent/20">{filteredServers.length} Active Endpoints</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -174,7 +175,7 @@ export default function Dashboard() {
           className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'home' ? "text-accent scale-110" : "text-muted-foreground")}
         >
           <LayoutDashboard className="w-6 h-6" />
-          <span className="text-[8px] font-bold uppercase tracking-widest">Dash</span>
+          <span className="text-[8px] font-bold uppercase tracking-widest">Dashboard</span>
         </Button>
         <Button 
           variant="ghost" 
@@ -183,7 +184,7 @@ export default function Dashboard() {
           className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'servers' ? "text-accent scale-110" : "text-muted-foreground")}
         >
           <Globe className="w-6 h-6" />
-          <span className="text-[8px] font-bold uppercase tracking-widest">Nodes</span>
+          <span className="text-[8px] font-bold uppercase tracking-widest">Network</span>
         </Button>
         <Button 
           variant="ghost" 

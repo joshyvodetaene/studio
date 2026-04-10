@@ -4,12 +4,12 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'TorVPN Pro',
-  description: 'Standalone Privacy Portal',
+  title: 'Torro — Secure Portal',
+  description: 'Standalone High-Performance Tor-optimized VPN Portal',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'TorVPN Pro',
+    title: 'Torro',
   },
   formatDetection: {
     telephone: false,
@@ -37,7 +37,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
-        {/* Android Specific Meta Tags */}
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
