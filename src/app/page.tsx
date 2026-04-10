@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 export default function Dashboard() {
   const [selectedServer, setSelectedServer] = useState<VpnServer | null>(MOCK_SERVERS[0]);
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'settings'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'config'>('home');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -44,16 +44,28 @@ export default function Dashboard() {
         </div>
         
         <nav className="flex flex-col gap-5">
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-accent bg-accent/10">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setActiveTab('home')}
+            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'home' ? "text-accent bg-accent/10" : "text-muted-foreground")}
+          >
             <LayoutDashboard className="w-6 h-6" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-muted-foreground hover:text-white transition-all">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setActiveTab('servers')}
+            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'servers' ? "text-accent bg-accent/10" : "text-muted-foreground")}
+          >
             <Globe className="w-6 h-6" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-muted-foreground hover:text-white transition-all">
-            <Activity className="w-6 h-6" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-muted-foreground hover:text-white transition-all">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setActiveTab('config')}
+            className={cn("h-12 w-12 rounded-xl transition-all", activeTab === 'config' ? "text-accent bg-accent/10" : "text-muted-foreground")}
+          >
             <Settings className="w-6 h-6" />
           </Button>
         </nav>
@@ -95,55 +107,59 @@ export default function Dashboard() {
           <ScrollArea className="h-full px-4 md:px-8 py-6">
             <div className="max-w-7xl mx-auto space-y-8 pb-10">
               
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-                {/* Main Connection Panel */}
-                <div className="xl:col-span-4 sticky top-0">
-                  <ConnectionPanel selectedServer={selectedServer} />
-                </div>
-
-                {/* Main Dashboard Grid */}
-                <div className="xl:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  
-                  {/* Left Column: Servers */}
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Global Nodes</h2>
-                      <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full border border-accent/20">{filteredServers.length} Active</span>
+              {activeTab === 'home' && (
+                <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="xl:col-span-4 lg:sticky lg:top-0">
+                    <ConnectionPanel selectedServer={selectedServer} />
+                  </div>
+                  <div className="xl:col-span-8 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <TorCircuitViz />
+                      <DeviceList />
                     </div>
-                    <div className="space-y-3">
-                      {filteredServers.map((server) => (
-                        <ServerCard 
-                          key={server.id} 
-                          server={server} 
-                          isSelected={selectedServer?.id === server.id}
-                          onSelect={setSelectedServer}
-                        />
-                      ))}
+                    <div className="p-5 rounded-2xl glass-panel flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <Activity className="w-8 h-8 text-accent/50" />
+                        <div className="text-center sm:text-left">
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Encrypted Tunnel</p>
+                          <p className="text-xs font-mono font-bold text-accent">AES-256-GCM / ChaCha20-Poly1305</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="px-3 py-1 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-tighter">Spark v2.4</span>
+                      </div>
                     </div>
                   </div>
+                </div>
+              )}
 
-                  {/* Right Column: Tools & Stats */}
-                  <div className="space-y-6">
-                    <TorCircuitViz />
-                    <ConfigTool />
-                    <DeviceList />
+              {activeTab === 'servers' && (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Global Nodes</h2>
+                    <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full border border-accent/20">{filteredServers.length} Active</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {filteredServers.map((server) => (
+                      <ServerCard 
+                        key={server.id} 
+                        server={server} 
+                        isSelected={selectedServer?.id === server.id}
+                        onSelect={(s) => {
+                          setSelectedServer(s);
+                          setActiveTab('home');
+                        }}
+                      />
+                    ))}
                   </div>
                 </div>
-              </div>
+              )}
 
-              {/* Status Footer */}
-              <div className="p-5 rounded-2xl glass-panel flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="text-center sm:text-left">
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Encrypted Tunnel</p>
-                    <p className="text-xs font-mono font-bold text-accent">AES-256-GCM / ChaCha20</p>
-                  </div>
+              {activeTab === 'config' && (
+                <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <ConfigTool />
                 </div>
-                <div className="flex gap-2">
-                  <span className="px-3 py-1 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-tighter">Spark License</span>
-                  <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-muted-foreground text-[10px] font-bold uppercase tracking-tighter">Build 2.4.0-NATIVE</span>
-                </div>
-              </div>
+              )}
             </div>
           </ScrollArea>
         </div>
@@ -172,8 +188,8 @@ export default function Dashboard() {
         <Button 
           variant="ghost" 
           size="icon" 
-          onClick={() => setActiveTab('settings')}
-          className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'settings' ? "text-accent scale-110" : "text-muted-foreground")}
+          onClick={() => setActiveTab('config')}
+          className={cn("flex flex-col gap-1 h-auto py-2 transition-all", activeTab === 'config' ? "text-accent scale-110" : "text-muted-foreground")}
         >
           <Settings className="w-6 h-6" />
           <span className="text-[8px] font-bold uppercase tracking-widest">Config</span>

@@ -1,3 +1,4 @@
+
 export interface VpnServer {
   id: string;
   name: string;
@@ -15,12 +16,12 @@ export interface VpnServer {
 export const MOCK_SERVERS: VpnServer[] = [
   {
     id: 'ch-zrh-1',
-    name: 'Zurich #1',
+    name: 'Zurich Secure #1',
     endpoint: 'vpn.ch1.torvpn.com:51820',
     publicKey: 'Xp9Z...s8L0=',
     country: 'CH',
     city: 'Zurich',
-    load: 42,
+    load: 18,
     latency: 12,
     supportsUdp: true,
     supportsTcpTunnel: true,
@@ -28,25 +29,38 @@ export const MOCK_SERVERS: VpnServer[] = [
   },
   {
     id: 'de-fra-2',
-    name: 'Frankfurt #2',
+    name: 'Frankfurt Relay #2',
     endpoint: 'vpn.de2.torvpn.com:51820',
     publicKey: 'Yq2B...m1N5=',
     country: 'DE',
     city: 'Frankfurt',
-    load: 65,
+    load: 45,
     latency: 18,
     supportsUdp: true,
     supportsTcpTunnel: true,
     isActive: true,
   },
   {
+    id: 'is-rey-1',
+    name: 'Reykjavik Ghost #1',
+    endpoint: 'vpn.is1.torvpn.com:51820',
+    publicKey: 'Is8A...q1Z9=',
+    country: 'IS',
+    city: 'Reykjavik',
+    load: 12,
+    latency: 45,
+    supportsUdp: true,
+    supportsTcpTunnel: true,
+    isActive: true,
+  },
+  {
     id: 'us-nyc-1',
-    name: 'New York #1',
+    name: 'New York Guard #1',
     endpoint: 'vpn.ny1.torvpn.com:51820',
     publicKey: 'Zk4M...p9R2=',
     country: 'US',
     city: 'New York',
-    load: 25,
+    load: 65,
     latency: 85,
     supportsUdp: true,
     supportsTcpTunnel: false,
@@ -54,13 +68,13 @@ export const MOCK_SERVERS: VpnServer[] = [
   },
   {
     id: 'jp-nrt-1',
-    name: 'Tokyo #1',
+    name: 'Tokyo Stealth #1',
     endpoint: 'vpn.jp1.torvpn.com:51820',
     publicKey: 'Wv7S...k3Q1=',
     country: 'JP',
     city: 'Tokyo',
-    load: 88,
-    latency: 240,
+    load: 82,
+    latency: 210,
     supportsUdp: true,
     supportsTcpTunnel: true,
     isActive: true,
@@ -76,7 +90,7 @@ export interface DeviceStatus {
 }
 
 export const MOCK_DEVICES: DeviceStatus[] = [
-  { id: 'dev-1', name: 'MacBook Pro', platform: 'macos', isConnected: true, lastSeen: new Date().toISOString() },
-  { id: 'dev-2', name: 'iPhone 15', platform: 'ios', isConnected: false, lastSeen: new Date(Date.now() - 3600000).toISOString() },
-  { id: 'dev-3', name: 'Work Station', platform: 'linux', isConnected: true, lastSeen: new Date().toISOString() },
+  { id: 'dev-1', name: 'Primary Device', platform: 'android', isConnected: true, lastSeen: new Date().toISOString() },
+  { id: 'dev-2', name: 'Work Station', platform: 'linux', isConnected: true, lastSeen: new Date().toISOString() },
+  { id: 'dev-3', name: 'Tablet Z', platform: 'ios', isConnected: false, lastSeen: new Date(Date.now() - 86400000).toISOString() },
 ];
