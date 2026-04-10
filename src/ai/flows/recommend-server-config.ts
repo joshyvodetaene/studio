@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview This file implements a Genkit flow for recommending the most optimal VPN server
  * based on user needs, prioritizing Anonymity and Performance.
@@ -79,7 +78,6 @@ const recommendServerConfigFlow = ai.defineFlow(
         },
       };
     } catch (error) {
-      // Robust fallback for prototyping without API keys
       const recommendedServer = availableServers[0];
       return {
         recommendedServerId: recommendedServer.id,
