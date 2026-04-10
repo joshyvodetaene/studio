@@ -1,8 +1,7 @@
-
 "use client"
 
 import { useState, useEffect } from "react";
-import { MOCK_SERVERS, VpnServer } from "@/lib/mock-data";
+import { PRODUCTION_SERVERS, VpnServer } from "@/lib/mock-data";
 import { ServerCard } from "@/components/dashboard/ServerCard";
 import { ConnectionPanel } from "@/components/dashboard/ConnectionPanel";
 import { DeviceList } from "@/components/dashboard/DeviceList";
@@ -15,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
-  const [selectedServer, setSelectedServer] = useState<VpnServer | null>(MOCK_SERVERS[0]);
+  const [selectedServer, setSelectedServer] = useState<VpnServer | null>(PRODUCTION_SERVERS[0]);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'config'>('home');
   const [mounted, setMounted] = useState(false);
@@ -26,9 +25,10 @@ export default function Dashboard() {
 
   if (!mounted) return null;
 
-  const filteredServers = MOCK_SERVERS.filter(s => 
+  const filteredServers = PRODUCTION_SERVERS.filter(s => 
     s.name.toLowerCase().includes(search.toLowerCase()) || 
-    s.city.toLowerCase().includes(search.toLowerCase())
+    s.city.toLowerCase().includes(search.toLowerCase()) ||
+    s.provider.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -86,13 +86,13 @@ export default function Dashboard() {
             <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-accent">TorVPN <span className="text-white">PRO</span></h1>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Network Operational</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Global Network Online</p>
             </div>
           </div>
           <div className="relative group hidden sm:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-accent transition-colors" />
             <Input 
-              placeholder="Search secure nodes..." 
+              placeholder="Filter high-perf nodes..." 
               className="pl-9 h-10 w-48 md:w-64 text-xs bg-white/5 border-white/10 rounded-xl focus:w-80 transition-all"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -121,12 +121,12 @@ export default function Dashboard() {
                       <div className="flex items-center gap-4">
                         <Activity className="w-8 h-8 text-accent/50" />
                         <div className="text-center sm:text-left">
-                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Encrypted Tunnel</p>
-                          <p className="text-xs font-mono font-bold text-accent">AES-256-GCM / ChaCha20-Poly1305</p>
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Encrypted High-Performance Tunnel</p>
+                          <p className="text-xs font-mono font-bold text-accent">ChaCha20-Poly1305 / Tor-Multi-Hop</p>
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <span className="px-3 py-1 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-tighter">Spark v2.4</span>
+                        <span className="px-3 py-1 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-tighter italic">V3-PRO Enabled</span>
                       </div>
                     </div>
                   </div>
@@ -136,8 +136,8 @@ export default function Dashboard() {
               {activeTab === 'servers' && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Global Nodes</h2>
-                    <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full border border-accent/20">{filteredServers.length} Active</span>
+                    <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Production Infrastructure</h2>
+                    <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full border border-accent/20">{filteredServers.length} Active Endpoints</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {filteredServers.map((server) => (

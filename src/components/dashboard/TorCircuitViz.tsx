@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react";
@@ -6,16 +5,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Share2, Map, ShieldAlert, Loader2, Info, ChevronRight, ShieldCheck } from "lucide-react";
 import { explainTorCircuit } from "@/ai/flows/explain-tor-circuit";
+import { PRODUCTION_SERVERS } from "@/lib/mock-data";
 
 export function TorCircuitViz() {
   const [loading, setLoading] = useState(false);
   const [explanation, setExplanation] = useState<string | null>(null);
 
-  // Echte bekannte Tor-Knoten für die Visualisierung
+  // Reale Knotendaten aus der Produktionsliste extrahieren
   const realCircuit = {
-    entryNode: { ip: "185.220.101.44", country: "Germany", city: "Berlin" },
-    middleNode: { ip: "109.163.234.11", country: "Sweden", city: "Stockholm" },
-    exitNode: { ip: "82.165.177.100", country: "Switzerland", city: "Zurich" }
+    entryNode: { 
+      ip: PRODUCTION_SERVERS.find(s => s.id === 'node-at-vienna')?.endpoint.split(':')[0] || "193.171.202.150", 
+      country: "Austria", 
+      city: "Vienna" 
+    },
+    middleNode: { 
+      ip: PRODUCTION_SERVERS.find(s => s.id === 'node-se-piraten')?.endpoint.split(':')[0] || "109.163.234.11", 
+      country: "Sweden", 
+      city: "Stockholm" 
+    },
+    exitNode: { 
+      ip: PRODUCTION_SERVERS.find(s => s.id === 'node-de-torservers')?.endpoint.split(':')[0] || "185.220.101.44", 
+      country: "Germany", 
+      city: "Berlin" 
+    }
   };
 
   const handleExplain = async () => {
@@ -24,7 +36,7 @@ export function TorCircuitViz() {
       const result = await explainTorCircuit(realCircuit);
       setExplanation(result.explanation);
     } catch (e) {
-      console.error("Analysis failed");
+      console.error("Neural analysis offline");
     } finally {
       setLoading(false);
     }
@@ -36,7 +48,7 @@ export function TorCircuitViz() {
         <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            Circuit Topology (Live)
+            Active Multi-Hop Topology
           </div>
           <Share2 className="w-3 h-3 cursor-pointer hover:text-accent transition-colors" />
         </CardTitle>
@@ -46,30 +58,30 @@ export function TorCircuitViz() {
           <div className="absolute top-1/2 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-accent/30 to-transparent -z-10 -translate-y-1/2" />
           
           <div className="flex flex-col items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-accent text-background flex items-center justify-center font-black text-xs shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform">GUARD</div>
+            <div className="w-10 h-10 rounded-full bg-accent text-background flex items-center justify-center font-black text-[10px] shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform">GUARD</div>
             <div className="text-center">
-              <p className="text-[9px] font-black text-white uppercase tracking-tighter">DE</p>
-              <p className="text-[7px] text-muted-foreground font-mono">185.220.101</p>
+              <p className="text-[9px] font-black text-white uppercase tracking-tighter">{realCircuit.entryNode.country.substring(0,2).toUpperCase()}</p>
+              <p className="text-[7px] text-muted-foreground font-mono">{realCircuit.entryNode.ip.split('.').slice(0,3).join('.')}</p>
             </div>
           </div>
           
           <ChevronRight className="w-4 h-4 text-accent/20" />
 
           <div className="flex flex-col items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-black/40 border border-accent/30 text-accent flex items-center justify-center font-black text-xs group-hover:scale-110 transition-transform">RELAY</div>
+            <div className="w-10 h-10 rounded-full bg-black/40 border border-accent/30 text-accent flex items-center justify-center font-black text-[10px] group-hover:scale-110 transition-transform">RELAY</div>
             <div className="text-center">
-              <p className="text-[9px] font-black text-white uppercase tracking-tighter">SE</p>
-              <p className="text-[7px] text-muted-foreground font-mono">109.163.234</p>
+              <p className="text-[9px] font-black text-white uppercase tracking-tighter">{realCircuit.middleNode.country.substring(0,2).toUpperCase()}</p>
+              <p className="text-[7px] text-muted-foreground font-mono">{realCircuit.middleNode.ip.split('.').slice(0,3).join('.')}</p>
             </div>
           </div>
 
           <ChevronRight className="w-4 h-4 text-accent/20" />
 
           <div className="flex flex-col items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-black/40 border-dashed border-accent/40 text-accent flex items-center justify-center font-black text-xs group-hover:scale-110 transition-transform">EXIT</div>
+            <div className="w-10 h-10 rounded-full bg-black/40 border-dashed border-accent/40 text-accent flex items-center justify-center font-black text-[10px] group-hover:scale-110 transition-transform">EXIT</div>
             <div className="text-center">
-              <p className="text-[9px] font-black text-white uppercase tracking-tighter">CH</p>
-              <p className="text-[7px] text-muted-foreground font-mono">82.165.177</p>
+              <p className="text-[9px] font-black text-white uppercase tracking-tighter">{realCircuit.exitNode.country.substring(0,2).toUpperCase()}</p>
+              <p className="text-[7px] text-muted-foreground font-mono">{realCircuit.exitNode.ip.split('.').slice(0,3).join('.')}</p>
             </div>
           </div>
         </div>
@@ -82,7 +94,7 @@ export function TorCircuitViz() {
             disabled={loading}
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin text-accent" /> : <ShieldCheck className="w-4 h-4 text-accent" />}
-            Deep Integrity Scan
+            Analyze Anonymity Layer
           </Button>
         ) : (
           <div className="p-4 rounded-xl bg-accent/5 border border-accent/10 text-[11px] leading-relaxed animate-in fade-in zoom-in-95 duration-500 relative">
@@ -90,11 +102,11 @@ export function TorCircuitViz() {
               <div className="w-5 h-5 rounded bg-accent/20 flex items-center justify-center">
                 <Info className="w-3 h-3 text-accent" />
               </div>
-              <h5 className="font-black text-accent uppercase tracking-widest">Neural Security Analysis</h5>
+              <h5 className="font-black text-accent uppercase tracking-widest">Circuit Analysis Complete</h5>
             </div>
             <p className="text-foreground/80 leading-relaxed italic">"{explanation}"</p>
             <Button variant="link" className="p-0 h-auto text-[10px] text-accent mt-3 font-bold uppercase tracking-tighter hover:no-underline" onClick={() => setExplanation(null)}>
-              Close Analysis Buffer
+              Clear Buffer
             </Button>
           </div>
         )}

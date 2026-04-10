@@ -1,22 +1,22 @@
 'use server';
 /**
  * @fileOverview This file implements a Genkit flow for recommending the most optimal VPN server
- * based on user needs, prioritizing High-Performance and Bandwidth.
+ * based on user needs, prioritizing Anonymity and Performance.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {MOCK_SERVERS} from '@/lib/mock-data';
+import {PRODUCTION_SERVERS} from '@/lib/mock-data';
 
 const RecommendServerConfigInputSchema = z.object({
-  vpnNeeds: z.string().describe('User description of VPN needs. Focus on "Performance", "Speed", "Latency".'),
+  vpnNeeds: z.string().describe('User description of VPN needs. Focus on "Anonymity", "Onion", "Privacy", "Throughput".'),
   clientPublicKey: z.string().describe('The WireGuard client public key.'),
 });
 export type RecommendServerConfigInput = z.infer<typeof RecommendServerConfigInputSchema>;
 
 const PromptOutputSchema = z.object({
-  recommendedServerId: z.string().describe('The ID of the recommended High-Performance VPN server.'),
-  explanation: z.string().describe('A brief explanation focusing on bandwidth and throughput benefits.'),
+  recommendedServerId: z.string().describe('The ID of the recommended secure VPN node.'),
+  explanation: z.string().describe('A brief explanation focusing on anonymity layers and performance.'),
 });
 
 const RecommendServerConfigOutputSchema = z.object({
@@ -35,15 +35,15 @@ const recommendServerPrompt = ai.definePrompt({
   name: 'recommendServerPrompt',
   input: {schema: z.object({vpnNeeds: z.string(), serversJson: z.string()})},
   output: {schema: PromptOutputSchema},
-  prompt: `You are a Network Performance Engineer.
-Select the server that provides the MAX THROUGHPUT and MIN LATENCY for the following needs.
+  prompt: `You are a Cyber Security Architect.
+Select the optimal node that ensures MAXIMUM ANONYMITY and HIGH THROUGHPUT for the following request.
 
 User's Needs: "{{{vpnNeeds}}}"
 
-Available Performance Nodes:
+Production Infrastructure Nodes:
 {{{serversJson}}}
 
-Prioritize nodes with the highest "bandwidth" and lowest "latency".
+Prioritize nodes from "Torservers.net", "Calyx Institute", or "Infomaniak" if anonymity is requested.
 Output a JSON object with recommendedServerId and explanation.`,
 });
 
@@ -54,7 +54,7 @@ const recommendServerConfigFlow = ai.defineFlow(
     outputSchema: RecommendServerConfigOutputSchema,
   },
   async (input) => {
-    const availableServers = MOCK_SERVERS;
+    const availableServers = PRODUCTION_SERVERS;
 
     const { output } = await recommendServerPrompt({
       vpnNeeds: input.vpnNeeds,
@@ -62,13 +62,13 @@ const recommendServerConfigFlow = ai.defineFlow(
     });
 
     if (!output?.recommendedServerId) {
-      throw new Error('AI failed to recommend a high-performance node.');
+      throw new Error('Neural analysis failed to identify a secure node.');
     }
 
     const recommendedServer = availableServers.find(s => s.id === output.recommendedServerId);
 
     if (!recommendedServer) {
-      throw new Error('Recommended performance node not found.');
+      throw new Error('Recommended secure node index mismatch.');
     }
 
     return {
@@ -78,7 +78,7 @@ const recommendServerConfigFlow = ai.defineFlow(
         serverEndpoint: recommendedServer.endpoint,
         serverPublicKey: recommendedServer.publicKey,
         clientAddress: '10.8.0.2/32',
-        dns: ['1.1.1.1', '8.8.8.8'],
+        dns: ['1.1.1.1', '8.8.8.8', '9.9.9.9'],
       },
     };
   }
