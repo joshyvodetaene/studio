@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'TorVPN Pro — Secure Portal',
-    short_name: 'TorVPN',
+    name: 'Torro — Secure Portal',
+    short_name: 'Torro',
     description: 'Standalone High-Performance Tor-optimized VPN Portal',
     start_url: '/',
     display: 'standalone',
@@ -12,13 +12,13 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#47D0EB',
     icons: [
       {
-        src: 'https://picsum.photos/seed/torvpn-icon/192/192',
+        src: 'https://picsum.photos/seed/torro-icon/192/192',
         sizes: '192x192',
         type: 'image/png',
         purpose: 'maskable',
       },
       {
-        src: 'https://picsum.photos/seed/torvpn-icon/512/512',
+        src: 'https://picsum.photos/seed/torro-icon/512/512',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',
