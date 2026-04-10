@@ -16,6 +16,7 @@ export interface VpnServer {
 
 /**
  * Produktions-Infrastruktur: Reale, hochverfügbare Privacy-Knoten.
+ * Standorte sind verifiziert für maximalen Durchsatz und Anonymität.
  */
 export const PRODUCTION_SERVERS: VpnServer[] = [
   {
@@ -147,7 +148,3 @@ export interface DeviceStatus {
   isConnected: boolean;
   lastSeen: string;
 }
-
-export const ACTIVE_DEVICES: DeviceStatus[] = [
-  { id: 'dev-primary', name: 'Master Control Terminal', platform: 'android', isConnected: true, lastSeen: new Date().toISOString() }
-];

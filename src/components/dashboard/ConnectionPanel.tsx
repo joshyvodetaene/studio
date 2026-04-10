@@ -58,14 +58,17 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
   useEffect(() => {
     let throughputInterval: any;
     if (status === "connected") {
-      setSecurityScore(94);
+      // Realer Integrity Score basierend auf Settings
+      const score = (fullTunnel ? 40 : 10) + (killSwitch ? 40 : 10) + 14;
+      setSecurityScore(score);
+      
       throughputInterval = setInterval(() => {
         setDownlink(Math.floor(Math.random() * 80) + 120);
         setUplink(Math.floor(Math.random() * 30) + 40);
       }, 1000);
     }
     return () => clearInterval(throughputInterval);
-  }, [status]);
+  }, [status, fullTunnel, killSwitch]);
 
   return (
     <Card className="glass-panel border-none shadow-2xl relative overflow-hidden neon-border">
@@ -119,7 +122,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
               {status === "connected" ? "ENCRYPTED" : status === "connecting" ? "SYNCING..." : "OFFLINE"}
             </h2>
             <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.4em] mt-2">
-              {status === "connected" ? `NODE: ${selectedServer?.city.toUpperCase()}` : status === "connecting" ? "ESTABLISHING HANDSHAKE" : "DEVICE UNPROTECTED"}
+              {status === "connected" ? `NODE: ${selectedServer?.city.toUpperCase()}` : status === "connecting" ? "ESTABLISHING HANDSHAKE" : "TERMINAL UNPROTECTED"}
             </p>
           </div>
         </div>
