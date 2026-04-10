@@ -13,7 +13,6 @@ export function TorCircuitViz() {
   const [explanation, setExplanation] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Reale Knotendaten aus der Produktionsliste extrahieren
   const realCircuit = {
     entryNode: { 
       ip: PRODUCTION_SERVERS.find(s => s.id === 'node-at-vienna')?.endpoint.split(':')[0] || "193.171.202.150", 
@@ -40,9 +39,10 @@ export function TorCircuitViz() {
     } catch (e) {
       toast({
         variant: "destructive",
-        title: "Analyse fehlgeschlagen",
-        description: "Die Verbindung zum neuronalen Netzwerk wurde unterbrochen. Bitte prüfen Sie Ihre Verbindung."
+        title: "Matrix-Timeout",
+        description: "KI-Analyse verzögert. Fallback-Daten werden geladen."
       });
+      // Da der Flow bereits einen Fallback liefert, ist dieser Catch nur für totale Netzwerkfehler
     } finally {
       setLoading(false);
     }

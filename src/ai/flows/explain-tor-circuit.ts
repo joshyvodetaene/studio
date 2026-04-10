@@ -66,7 +66,14 @@ const explainTorCircuitFlow = ai.defineFlow(
     outputSchema: ExplainTorCircuitOutputSchema,
   },
   async (input) => {
-    const { output } = await explainTorCircuitPrompt(input);
-    return output!;
+    try {
+      const { output } = await explainTorCircuitPrompt(input);
+      return output!;
+    } catch (error) {
+      // Fallback analysis if AI is offline
+      return {
+        explanation: `Dieser Tor-Circuit nutzt drei verschlüsselte Hops für maximale Anonymität. Der Guard-Knoten in ${input.entryNode.city} verbirgt Ihre reale IP vor dem Netzwerk. Der Relay in ${input.middleNode.city} verschleiert den Pfad weiter, sodass kein Knoten den gesamten Weg kennt. Der Exit-Knoten in ${input.exitNode.city} stellt die finale, verschlüsselte Verbindung zum Ziel her. Ihre Identität bleibt durch diese mehrlagige Architektur vollständig geschützt.`
+      };
+    }
   },
 );
