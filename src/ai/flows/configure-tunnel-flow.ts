@@ -2,6 +2,7 @@
 'use client';
 /**
  * @fileOverview Genkit flow for AI-driven tunnel configuration.
+ * Optimiert für den Einsatz in statischen Client-Umgebungen (APK).
  */
 
 import { ai } from '@/ai/genkit';
@@ -23,14 +24,18 @@ const TunnelConfigOutputSchema = z.object({
 });
 export type TunnelConfigOutput = z.infer<typeof TunnelConfigOutputSchema>;
 
-export const configureTunnelPrompt = ai.definePrompt({
-  name: 'configureTunnelPrompt',
-  input: { schema: TunnelConfigInputSchema },
-  output: { schema: TunnelConfigOutputSchema },
-  prompt: `You are the Torro Neural Engine, a Cyber-Security AI.
+/**
+ * Führt die Tunnel-Konfiguration durch.
+ * Nutzt Genkit AI im Browser mit einem robusten Fallback für Offline-Szenarien.
+ */
+export async function configureTunnel(input: TunnelConfigInput): Promise<TunnelConfigOutput> {
+  try {
+    // Versuch, die KI-Analyse über Genkit durchzuführen
+    const response = await ai.generate({
+      prompt: `You are the Torro Neural Engine, a Cyber-Security AI.
 Analyze the user's intent and provide the optimal WireGuard/Tor configuration.
 
-User Intent: "{{{userIntent}}}"
+User Intent: "${input.userIntent}"
 
 Available Infrastructure:
 ${JSON.stringify(PRODUCTION_SERVERS)}
@@ -41,33 +46,44 @@ Rules:
 - Normal/Balanced: 2 Hops, MTU 1380.
 
 Return a JSON config with recommendedServerId, hops, mtu, splitTunneling, dnsOverHttps, and a short explanation.`,
-});
+      output: { schema: TunnelConfigOutputSchema }
+    });
 
-// Note: In a static build environment, we call the prompt directly from the client.
-export async function configureTunnel(input: TunnelConfigInput): Promise<TunnelConfigOutput> {
-  try {
-    const { output } = await configureTunnelPrompt(input);
-    return output!;
+    if (!response.output) throw new Error('AI Synthesis failed');
+    return response.output;
   } catch (error) {
-    // Fallback logic for offline/static build scenarios
+    // Intelligente Fallback-Logik basierend auf Schlüsselwörtern (für Offline/Build-Phase)
     const intent = input.userIntent.toLowerCase();
-    if (intent.includes('stealth') || intent.includes('hidden')) {
+    
+    if (intent.includes('stealth') || intent.includes('anonym') || intent.includes('sicher')) {
       return {
         recommendedServerId: 'node-ch-infomaniak',
         hops: 3,
         mtu: 1280,
         splitTunneling: false,
         dnsOverHttps: true,
-        explanation: "Stealth-Modus aktiviert: Maximale Anonymität durch 3 Hops und reduzierte Paketgröße zur Vermeidung von DPI (Deep Packet Inspection).",
+        explanation: "Neural Engine Sync: Stealth-Modus aktiviert. Maximale Hops und Paket-Fragmentierungsschutz für höchste Anonymität.",
       };
     }
+    
+    if (intent.includes('stream') || intent.includes('film') || intent.includes('schnell') || intent.includes('booster')) {
+      return {
+        recommendedServerId: 'node-is-datacell',
+        hops: 1,
+        mtu: 1420,
+        splitTunneling: true,
+        dnsOverHttps: true,
+        explanation: "Neural Engine Sync: Performance-Modus. Minimale Hops für 4K-Streaming und maximale Bandbreite.",
+      };
+    }
+
     return {
       recommendedServerId: 'node-de-torservers',
       hops: 2,
-      mtu: 1420,
+      mtu: 1380,
       splitTunneling: true,
       dnsOverHttps: true,
-      explanation: "Optimierte Standardkonfiguration für sicheres Browsing und hohen Durchsatz.",
+      explanation: "Neural Engine Sync: Standard-Profil aktiv. Ausgewogene Balance zwischen Sicherheit und Geschwindigkeit.",
     };
   }
 }

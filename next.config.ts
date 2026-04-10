@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Genkit/OpenTelemetry Node.js polyfills for static/browser build
+      // Detaillierte Polyfills für Node.js-Module im Browser-Bundle
       config.resolve.fallback = {
         ...config.resolve.fallback,
         async_hooks: false,
@@ -44,6 +44,24 @@ const nextConfig: NextConfig = {
         tls: false,
         child_process: false,
         perf_hooks: false,
+        os: false,
+        path: false,
+        stream: false,
+        crypto: false,
+        buffer: false,
+        util: false,
+        vm: false,
+        dns: false,
+        http2: false,
+        readline: false,
+      };
+
+      // Aggressives Aliasing, um Telemetrie-Module zu blockieren, die async_hooks erzwingen
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@opentelemetry/sdk-node': false,
+        '@opentelemetry/context-async-hooks': false,
+        '@opentelemetry/sdk-trace-node': false,
       };
     }
     return config;
