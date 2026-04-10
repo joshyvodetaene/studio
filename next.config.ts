@@ -15,18 +15,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
@@ -35,7 +23,7 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Detaillierte Polyfills für Node.js-Module im Browser-Bundle deaktivieren
+      // Radikale Deaktivierung von Node-Modulen für den statischen Export
       config.resolve.fallback = {
         ...config.resolve.fallback,
         async_hooks: false,
@@ -43,26 +31,22 @@ const nextConfig: NextConfig = {
         net: false,
         tls: false,
         child_process: false,
-        perf_hooks: false,
         os: false,
         path: false,
         stream: false,
         crypto: false,
         buffer: false,
         util: false,
-        vm: false,
-        dns: false,
-        http2: false,
-        readline: false,
       };
 
-      // Aggressives Aliasing, um Telemetrie-Module zu blockieren, die async_hooks erzwingen
+      // Blockiert Telemetrie-Module, die async_hooks erzwingen
       config.resolve.alias = {
         ...config.resolve.alias,
+        '@opentelemetry/api': false,
         '@opentelemetry/sdk-node': false,
         '@opentelemetry/context-async-hooks': false,
         '@opentelemetry/sdk-trace-node': false,
-        '@opentelemetry/api': false,
+        'genkit': false, // Verhindert das Laden des Genkit-Kerns im Browser-Bundle
       };
     }
     return config;
