@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Share2, Map, ShieldAlert, Loader2, Info, ChevronRight, ShieldCheck } from "lucide-react";
 import { explainTorCircuit } from "@/ai/flows/explain-tor-circuit";
 import { PRODUCTION_SERVERS } from "@/lib/mock-data";
+import { useToast } from "@/hooks/use-toast";
 
 export function TorCircuitViz() {
   const [loading, setLoading] = useState(false);
   const [explanation, setExplanation] = useState<string | null>(null);
+  const { toast } = useToast();
 
   // Reale Knotendaten aus der Produktionsliste extrahieren
   const realCircuit = {
@@ -36,7 +38,11 @@ export function TorCircuitViz() {
       const result = await explainTorCircuit(realCircuit);
       setExplanation(result.explanation);
     } catch (e) {
-      console.error("Neural analysis offline");
+      toast({
+        variant: "destructive",
+        title: "Analyse fehlgeschlagen",
+        description: "Die Verbindung zum neuronalen Netzwerk wurde unterbrochen. Bitte prüfen Sie Ihre Verbindung."
+      });
     } finally {
       setLoading(false);
     }
