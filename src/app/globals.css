@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,19 +11,19 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 2%;
     --popover-foreground: 0 0% 98%;
-    --primary: 350 70% 45%;
+    --primary: 350 75% 45%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 8%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 8%;
     --muted-foreground: 0 0% 50%;
-    --accent: 350 80% 55%;
+    --accent: 350 85% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 350 90% 40%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 10%;
-    --input: 0 0% 10%;
-    --ring: 350 70% 45%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 350 75% 45%;
     --radius: 1.25rem;
   }
 }
@@ -49,14 +50,14 @@
 }
 
 .glass-panel {
-  background: linear-gradient(135deg, rgba(15, 0, 0, 1) 0%, rgba(5, 0, 0, 0.95) 100%);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(153, 27, 27, 0.2);
+  background: linear-gradient(135deg, rgba(12, 0, 0, 1) 0%, rgba(5, 0, 0, 0.98) 100%);
+  backdrop-filter: blur(32px);
+  border: 1px solid rgba(153, 27, 27, 0.25);
 }
 
 .neon-border {
-  box-shadow: 0 0 40px rgba(153, 27, 27, 0.15);
-  border-color: rgba(153, 27, 27, 0.4);
+  box-shadow: 0 0 30px rgba(153, 27, 27, 0.15);
+  border-color: rgba(153, 27, 27, 0.45);
 }
 
 .pulse-wine {

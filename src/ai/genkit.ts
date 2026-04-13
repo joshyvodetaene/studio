@@ -1,14 +1,13 @@
 
 'use client';
 
-import {genkit} from 'genkit';
-import {googleAI} from '@genkit-ai/google-genai';
-
 /**
- * Initialisiert Genkit für den Client-Einsatz.
- * Wichtig: Wir nutzen hier nur die Plugins, die im Browser funktionieren.
+ * Torro PRO Neural Engine Core
+ * Wir verwenden hier eine leichtgewichtige Client-Architektur, 
+ * um die Kompatibilität mit dem statischen Android-Build zu gewährleisten.
  */
-export const ai = genkit({
-  plugins: [googleAI()],
-  model: 'googleai/gemini-2.5-flash',
-});
+export const ai = {
+  // Mock/Placeholder für zukünftige REST-Erweiterungen
+  name: 'Torro Neural Engine',
+  version: '2.5.0-Flash'
+};

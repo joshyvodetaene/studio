@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Share2, Loader2, Info, ChevronRight, ShieldCheck, Radar } from "lucide-react";
 import { PRODUCTION_SERVERS } from "@/lib/server-data";
 import { useToast } from "@/hooks/use-toast";
-import { analyzeTorCircuit } from "@/lib/services/network-engine";
+import { explainTorCircuit } from "@/ai/flows/explain-tor-circuit";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
@@ -20,17 +20,17 @@ export function TorCircuitViz() {
 
   const realCircuit = {
     entryNode: { 
-      ip: PRODUCTION_SERVERS.find(s => s.id === 'node-at-vienna')?.endpoint.split(':')[0] || "193.171.202.150", 
+      ip: "193.171.202.150", 
       country: "Austria", 
       city: "Vienna" 
     },
     middleNode: { 
-      ip: PRODUCTION_SERVERS.find(s => s.id === 'node-se-piraten')?.endpoint.split(':')[0] || "109.163.234.11", 
+      ip: "109.163.234.11", 
       country: "Sweden", 
       city: "Stockholm" 
     },
     exitNode: { 
-      ip: PRODUCTION_SERVERS.find(s => s.id === 'node-de-torservers')?.endpoint.split(':')[0] || "185.220.101.44", 
+      ip: "185.220.101.44", 
       country: "Germany", 
       city: "Berlin" 
     }
@@ -38,24 +38,22 @@ export function TorCircuitViz() {
 
   const handleExplain = async () => {
     setLoading(true);
-    setTimeout(() => {
-      try {
-        const result = analyzeTorCircuit(realCircuit);
-        setExplanation(result);
-        toast({
-          title: "Topology Verified",
-          description: "Neural trace analysis successful."
-        });
-      } catch (e) {
-        toast({
-          variant: "destructive",
-          title: "Analysis Failure",
-          description: "Could not retrieve topology details."
-        });
-      } finally {
-        setLoading(false);
-      }
-    }, 1500);
+    try {
+      const result = await explainTorCircuit(realCircuit);
+      setExplanation(result.explanation);
+      toast({
+        title: "Topology Verified",
+        description: "Neural trace analysis successful."
+      });
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: "Analysis Failure",
+        description: "Could not retrieve topology details."
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
