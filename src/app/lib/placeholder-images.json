@@ -1,23 +1,22 @@
-
 {
   "placeholderImages": [
     {
       "id": "hero-bg",
-      "description": "Secure network visualization",
-      "imageUrl": "https://picsum.photos/seed/torvpn-prod-1/1200/800",
-      "imageHint": "network security"
+      "description": "Deep red secure network visualization",
+      "imageUrl": "https://picsum.photos/seed/torro-wine-1/1200/800",
+      "imageHint": "network technology"
     },
     {
       "id": "server-map",
-      "description": "Global server locations",
-      "imageUrl": "https://picsum.photos/seed/torvpn-prod-2/800/600",
-      "imageHint": "world map"
+      "description": "Global dark red node topology",
+      "imageUrl": "https://picsum.photos/seed/torro-wine-2/800/600",
+      "imageHint": "world topology"
     },
     {
-      "id": "app-icon",
-      "description": "App Icon Placeholder",
-      "imageUrl": "https://picsum.photos/seed/torvpn-prod-3/512/512",
-      "imageHint": "shield icon"
+      "id": "trace-viz",
+      "description": "AI trace visualization",
+      "imageUrl": "https://picsum.photos/seed/torro-wine-3/600/400",
+      "imageHint": "cyber security"
     }
   ]
 }

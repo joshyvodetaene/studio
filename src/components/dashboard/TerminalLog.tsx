@@ -56,7 +56,7 @@ export function TerminalLog({ isActive }: { isActive: boolean }) {
           <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Neural Execution Log</h3>
         </div>
         <div className="flex items-center gap-2">
-          <div className={cn("w-1.5 h-1.5 rounded-full", isActive ? "bg-primary animate-pulse shadow-[0_0_5px_red]" : "bg-muted")} />
+          <div className={cn("w-1.5 h-1.5 rounded-full", isActive ? "bg-primary animate-pulse shadow-[0_0_5px_rgba(153,27,27,0.8)]" : "bg-muted")} />
           <span className="text-[8px] font-bold text-muted-foreground uppercase">{isActive ? "Processing" : "Idle"}</span>
         </div>
       </div>
@@ -74,7 +74,7 @@ export function TerminalLog({ isActive }: { isActive: boolean }) {
               <span className="text-muted-foreground/60 shrink-0 font-mono">[{log.timestamp}]</span>
               <span className={cn(
                 "font-black shrink-0 w-14 tracking-tighter uppercase",
-                log.type === 'success' ? "text-primary/90" : "text-yellow-600"
+                log.type === 'success' ? "text-primary/90" : "text-primary/50"
               )}>{log.module}</span>
               <span className="text-white/80 group-hover:text-white transition-colors">{log.message}</span>
             </div>

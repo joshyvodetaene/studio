@@ -13,7 +13,7 @@ interface ServerCardProps {
 }
 
 export function ServerCard({ server, isSelected, onSelect }: ServerCardProps) {
-  const loadColor = server.load < 30 ? "bg-red-500" : server.load < 70 ? "bg-red-700" : "bg-red-900";
+  const loadColor = server.load < 30 ? "bg-primary" : server.load < 70 ? "bg-primary/80" : "bg-primary/60";
   
   const getFlag = (code: string) => {
     const flags: Record<string, string> = {
@@ -26,7 +26,7 @@ export function ServerCard({ server, isSelected, onSelect }: ServerCardProps) {
     <Card 
       className={cn(
         "cursor-pointer transition-all duration-300 hover:border-primary/50 group relative overflow-hidden border-white/5",
-        isSelected ? "bg-primary/10 ring-1 ring-primary border-primary/40 shadow-[0_0_20px_rgba(220,20,60,0.2)]" : "bg-white/5 hover:bg-white/10"
+        isSelected ? "bg-primary/10 ring-1 ring-primary border-primary/40 shadow-[0_0_20px_rgba(153,27,27,0.2)]" : "bg-white/5 hover:bg-white/10"
       )}
       onClick={() => onSelect(server)}
     >

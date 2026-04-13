@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react";
@@ -26,14 +25,13 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
   const [uplink, setUplink] = useState(0);
   const [securityScore, setSecurityScore] = useState(0);
   
-  // Sync status on mount
   useEffect(() => {
     if (vpnBackgroundService.isActive()) {
       setStatus("connected");
       setProgress(100);
-      if (onStatusChange) onStatusChange("connected");
+      onStatusChange?.("connected");
     }
-  }, []);
+  }, [onStatusChange]);
 
   const handleToggle = async () => {
     if (status === "disconnected") {
@@ -46,7 +44,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
       setDownlink(0);
       setUplink(0);
       setSecurityScore(0);
-      if (onStatusChange) onStatusChange("disconnected");
+      onStatusChange?.("disconnected");
       await vpnBackgroundService.deactivateTunnel();
     }
   };
@@ -71,9 +69,9 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
   useEffect(() => {
     if (status === "connecting" && progress === 100) {
       setStatus("connected");
-      if (onStatusChange) onStatusChange("connected");
+      onStatusChange?.("connected");
     }
-  }, [progress, status]);
+  }, [progress, status, onStatusChange]);
 
   useEffect(() => {
     let throughputInterval: any;
