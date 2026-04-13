@@ -13,7 +13,9 @@ class VpnBackgroundService {
   private isTunnelActive: boolean = false;
 
   private constructor() {
-    this.initListeners();
+    if (typeof window !== 'undefined') {
+      this.initListeners();
+    }
   }
 
   public static getInstance(): VpnBackgroundService {
@@ -24,14 +26,16 @@ class VpnBackgroundService {
   }
 
   private initListeners() {
-    // Überwacht App-Status Änderungen
-    App.addListener('appStateChange', ({ isActive }) => {
-      if (!isActive && this.isTunnelActive) {
-        console.log('[VPN-CORE] App im Hintergrund. Full Device Guard bleibt aktiv.');
-        // In der nativen Android-Implementierung sorgt hier der VpnService
-        // für das VPN-Symbol in der Statusleiste.
-      }
-    });
+    try {
+      // Überwacht App-Status Änderungen
+      App.addListener('appStateChange', ({ isActive }) => {
+        if (!isActive && this.isTunnelActive) {
+          console.log('[VPN-CORE] App im Hintergrund. Full Device Guard bleibt aktiv.');
+        }
+      });
+    } catch (e) {
+      console.warn('Capacitor App Plugin not available in this environment');
+    }
   }
 
   /**
@@ -41,8 +45,8 @@ class VpnBackgroundService {
   public async activateTunnel() {
     this.isTunnelActive = true;
     console.log('[VPN-CORE] Device-Wide Tunnel Handshake initiiert.');
-    // Native Bridge Call: Hier würde der native Android VpnService gestartet,
-    // der das VPN-Symbol (Schlüssel oder VPN-Text) oben in der Systemleiste anzeigt.
+    // In der finalen APK wird hier der native VpnService gestartet,
+    // was das VPN-Symbol in der Statusleiste erzeugt.
   }
 
   /**

@@ -54,7 +54,7 @@ export default function WidgetPage() {
   }, [status]);
 
   return (
-    <div className="min-h-screen bg-black flex flex-items-center justify-center p-6 select-none overflow-hidden touch-none">
+    <div className="min-h-screen bg-black flex items-center justify-center p-6 select-none overflow-hidden touch-none">
       <div className={cn(
         "w-full max-w-sm glass-panel p-8 rounded-[2.5rem] flex flex-col items-center gap-8 relative border-none shadow-[0_0_50px_rgba(0,0,0,1)]",
         status === "connected" ? "neon-border" : "border-white/5"
@@ -101,7 +101,7 @@ export default function WidgetPage() {
         <div className="text-center w-full">
           <p className={cn(
             "text-2xl font-black italic uppercase tracking-tighter mb-1",
-            status === "connected" ? "text-primary" : "text-muted-foreground"
+            status === "connected" ? "text-primary" : status === "connecting" ? "text-primary/80" : "text-muted-foreground"
           )}>
             {status === "connected" ? "Encrypted" : status === "connecting" ? "Syncing..." : "Offline"}
           </p>
