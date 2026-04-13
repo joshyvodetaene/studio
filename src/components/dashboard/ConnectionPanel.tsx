@@ -53,7 +53,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
             clearInterval(interval);
             return 100;
           }
-          return prev + 8; // Schnellerer Handshake für PRO
+          return prev + 8;
         });
       }, 40);
     }
@@ -90,7 +90,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
           {status === "connected" && (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/20 border border-primary/40 animate-in fade-in zoom-in-90">
               <Infinity className="w-3 h-3 text-primary" />
-              <span className="text-[8px] text-primary uppercase font-black tracking-widest">Always-On Active</span>
+              <span className="text-[8px] text-primary uppercase font-black tracking-widest">System-Wide Active</span>
             </div>
           )}
         </CardTitle>
@@ -148,8 +148,8 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <Label htmlFor="full-tunnel" className="text-xs font-black block italic uppercase tracking-wider">Device Layer Routing</Label>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-tighter">Affects all applications</p>
+                <Label htmlFor="full-tunnel" className="text-xs font-black block italic uppercase tracking-wider">System Layer Routing</Label>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-tighter">Affects whole device traffic</p>
               </div>
             </div>
             <Switch id="full-tunnel" checked={fullTunnel} onCheckedChange={setFullTunnel} />

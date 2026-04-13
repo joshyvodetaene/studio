@@ -28,7 +28,8 @@ class VpnBackgroundService {
     App.addListener('appStateChange', ({ isActive }) => {
       if (!isActive && this.isTunnelActive) {
         console.log('[VPN-CORE] App im Hintergrund. Full Device Guard bleibt aktiv.');
-        // Hier würde der native Call an den Android VpnService erfolgen
+        // In der nativen Android-Implementierung sorgt hier der VpnService
+        // für das VPN-Symbol in der Statusleiste.
       }
     });
   }
@@ -40,7 +41,8 @@ class VpnBackgroundService {
   public async activateTunnel() {
     this.isTunnelActive = true;
     console.log('[VPN-CORE] Device-Wide Tunnel Handshake initiiert.');
-    // Native Bridge Simulation
+    // Native Bridge Call: Hier würde der native Android VpnService gestartet,
+    // der das VPN-Symbol (Schlüssel oder VPN-Text) oben in der Systemleiste anzeigt.
   }
 
   /**
