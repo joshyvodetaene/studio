@@ -1,7 +1,7 @@
 import { PRODUCTION_SERVERS, VpnServer, DeviceStatus } from './server-data';
 
 /**
- * Re-Export für Kompatibilität, aber Nutzung der realen Produktionsdaten.
+ * Re-Export der realen Produktionsdaten zur Wahrung der Kompatibilität.
  */
 export const MOCK_SERVERS = PRODUCTION_SERVERS;
 export type { VpnServer, DeviceStatus };

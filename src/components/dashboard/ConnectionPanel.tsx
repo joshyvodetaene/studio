@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react";
@@ -29,11 +28,11 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
   const handleToggle = async () => {
     if (status === "disconnected") {
       setStatus("connecting");
-      onStatusChange?.("connecting");
+      setProgress(0);
       await vpnBackgroundService.activateTunnel();
     } else {
       setStatus("disconnected");
-      onStatusChange?.("disconnected");
+      if (onStatusChange) onStatusChange("disconnected");
       setProgress(0);
       setDownlink(0);
       setUplink(0);
@@ -47,18 +46,20 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
     if (status === "connecting") {
       interval = setInterval(() => {
         setProgress(prev => {
-          if (prev >= 100) {
-            setStatus("connected");
-            onStatusChange?.("connected");
-            clearInterval(interval);
-            return 100;
-          }
-          return prev + 8;
+          const next = prev + 10;
+          return next > 100 ? 100 : next;
         });
-      }, 40);
+      }, 100);
     }
     return () => clearInterval(interval);
-  }, [status, onStatusChange]);
+  }, [status]);
+
+  useEffect(() => {
+    if (status === "connecting" && progress === 100) {
+      setStatus("connected");
+      if (onStatusChange) onStatusChange("connected");
+    }
+  }, [progress, status, onStatusChange]);
 
   useEffect(() => {
     let throughputInterval: any;
@@ -88,7 +89,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
             <span className="uppercase tracking-tighter">Full Device Guard</span>
           </div>
           {status === "connected" && (
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/20 border border-primary/40 animate-in fade-in zoom-in-90">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/20 border border-primary/40">
               <Infinity className="w-3 h-3 text-primary" />
               <span className="text-[8px] text-primary uppercase font-black tracking-widest">System-Wide Active</span>
             </div>
@@ -170,7 +171,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
         </div>
 
         {status === "connected" && (
-          <div className="grid grid-cols-2 gap-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-500">
+          <div className="grid grid-cols-2 gap-3 pt-2">
             <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 group overflow-hidden relative">
               <div className="absolute -right-4 -top-4 w-16 h-16 bg-primary/10 rounded-full blur-2xl" />
               <div className="flex items-center gap-2 mb-2">

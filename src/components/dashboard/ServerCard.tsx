@@ -1,6 +1,6 @@
 "use client"
 
-import { VpnServer } from "@/lib/mock-data";
+import { VpnServer } from "@/lib/server-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Signal, Globe, Zap, ShieldCheck, Activity } from "lucide-react";
