@@ -1,46 +1,35 @@
+# Torro PRO — High-Performance VPN & Privacy Portal
 
-# Torro — High-Performance Tor-optimized VPN Portal
+Torro PRO ist jetzt vollständig automatisiert. Der VPN-Tunnel arbeitet auf Systemebene und wird nach der Installation der APK automatisch vom Android-Betriebssystem registriert.
 
-Torro ist ein modernes, standalone Privacy-Portal, das für maximale Anonymität und hohen Durchsatz entwickelt wurde.
+## 🚀 Automatisierter APK Build (Empfohlen)
 
-## 🚀 WICHTIG: VPN-Symbol in der Statusleiste (Android APK)
+Das Projekt enthält eine **GitHub Action**, die alles für dich erledigt:
+1. Push deinen Code auf GitHub.
+2. Gehe zum Tab **Actions**.
+3. Lade die fertige `torro-debug-apk` herunter.
+Diese APK enthält bereits alle nativen Komponenten für das **VPN-Symbol (Schlüssel)** in der Statusleiste.
 
-Damit das **VPN-Symbol (Schlüssel)** in der Android-Statusleiste erscheint, musst du nach dem Download des Projekts (`git clone` oder ZIP) folgendes tun:
+## 🛠️ Lokaler Build (Manuell)
 
-1. **Android Projekt initialisieren**:
+Falls du die APK lokal auf deinem Rechner bauen möchtest:
+
+1. **Voraussetzungen**: Android Studio & JDK 17 installiert.
+2. **Native Prepare**:
    ```bash
-   npx cap add android
+   npm run android:prepare
    ```
-2. **VpnService deklarieren**:
-   Öffne `android/app/src/main/AndroidManifest.xml` und füge innerhalb des `<application>` Tags folgendes hinzu:
-   ```xml
-   <service android:name=".MyVpnService"
-            android:permission="android.permission.BIND_VPN_SERVICE"
-            android:exported="false">
-       <intent-filter>
-           <action android:name="android.net.VpnService"/>
-       </intent-filter>
-   </service>
-   ```
-3. **Native Komponente**:
-   Du musst eine kleine Java-Klasse `MyVpnService.java` erstellen, die von `android.net.VpnService` erbt. Eine Vorlage findest du in der Android-Entwicklerdokumentation.
-
-## 🛠️ Lokale Installation (nach dem Download)
-
-1. Öffne ein Terminal im Ordner `torro`.
-2. Installiere die Abhängigkeiten:
+   *Dieser Befehl erstellt automatisch die `MyVpnService.java` und modifiziert die `AndroidManifest.xml`.*
+3. **Build**:
    ```bash
-   npm install
-   ```
-3. Starte den Entwicklungsmodus:
-   ```bash
-   npm run dev
+   cd android && ./gradlew assembleDebug
    ```
 
-## 📂 Wo finde ich was?
+## 📂 Features
 
-- `src/ai/flows`: Die intelligente Tunnel-Konfiguration (Neural Engine).
-- `src/app/widget`: Die dedizierte Widget-Ansicht für den Startbildschirm.
-- `src/lib/services`: Der Background-Service für die System-Persistenz.
+- **Neural Synthesis Engine**: KI-gestützte Tunnel-Optimierung.
+- **Wine Red Stealth UI**: Maximale Dunkelheit für minimale Entdeckung.
+- **System-Wide Protection**: Der Tunnel schützt alle Apps auf deinem Gerät.
+- **Persistent Service**: Schutz bleibt aktiv, auch wenn die App geschlossen ist.
 
 Viel Erfolg mit Torro PRO!
