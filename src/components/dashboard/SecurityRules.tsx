@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
 import { Layers, Network, Info, ShieldCheck, Globe, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -66,7 +67,7 @@ export function SecurityRules() {
               </p>
             </div>
             
-            <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 opacity-50">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
               <div className="flex items-center gap-3">
                 <Globe className="w-4 h-4 text-muted-foreground" />
                 <span className="text-[10px] font-black uppercase tracking-widest">Auto-Reconnect Node</span>
