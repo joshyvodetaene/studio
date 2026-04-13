@@ -13,7 +13,7 @@ import { TerminalLog } from "@/components/dashboard/TerminalLog";
 import { SecurityRules } from "@/components/dashboard/SecurityRules";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert, Terminal, Lock, Flame } from "lucide-react";
+import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert, Terminal, Lock, Flame, BrainCircuit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -49,29 +49,46 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Firewall Simulation: Incoming Requests
+  // Firewall Simulation: Incoming Requests with AI Authorization Loop
   useEffect(() => {
     if (connectionStatus !== 'connected' || !firewallActive) return;
 
     const firewallInterval = setInterval(() => {
-      if (Math.random() > 0.7) {
+      if (Math.random() > 0.8) {
         const randomIp = `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
         const port = Math.floor(Math.random() * 65535);
+        const appGuess = port === 443 ? "Web Service" : port === 10000 ? "Signal-VoIP" : "Unknown Binary";
         
         toast({
-          title: "Firewall: Zugriff blockiert",
-          description: `Eingehende Verbindung von ${randomIp} auf Port ${port} abgefangen.`,
+          title: "Quantum Firewall: Intercepted",
+          description: `Eingehende Verbindung von ${randomIp} auf Port ${port} (${appGuess}).`,
           variant: "destructive",
           action: (
-            <ToastAction altText="Zulassen" onClick={() => {
-              toast({ title: "Regel aktualisiert", description: `Verbindung von ${randomIp} dauerhaft zugelassen.` });
-            }}>
-              Zulassen
-            </ToastAction>
+            <div className="flex gap-1">
+              <ToastAction altText="Audit" onClick={() => {
+                toast({ 
+                  title: "Neural Audit gestartet", 
+                  description: `AI prüft Paket-Integrität für Port ${port}...`,
+                  action: <BrainCircuit className="w-4 h-4 animate-pulse text-primary" />
+                });
+                setTimeout(() => {
+                  toast({ 
+                    title: "Audit abgeschlossen", 
+                    description: `Port ${port} als sicher eingestuft. Whitelist aktualisiert.`,
+                    variant: "default" 
+                  });
+                }, 2000);
+              }}>
+                Audit
+              </ToastAction>
+              <ToastAction altText="Block" onClick={() => toast({ title: "Dauerhaft blockiert" })}>
+                Block
+              </ToastAction>
+            </div>
           ),
         });
       }
-    }, 15000);
+    }, 20000);
 
     return () => clearInterval(firewallInterval);
   }, [connectionStatus, firewallActive, toast]);
@@ -155,7 +172,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", connectionStatus === 'connected' ? "bg-primary shadow-[0_0_8px_rgba(153,27,27,0.8)]" : "bg-muted")} />
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                  {connectionStatus === 'connected' ? "Dark-Web Backbone Live" : "Encryption Hub Ready"}
+                  {connectionStatus === 'connected' ? "Neural Protection Active" : "Encryption Hub Ready"}
                 </p>
               </div>
             </div>
