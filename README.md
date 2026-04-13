@@ -1,26 +1,31 @@
+
 # Torro — High-Performance Tor-optimized VPN Portal
 
-Torro ist ein modernes, standalone Privacy-Portal, das für maximale Anonymität und hohen Durchsatz entwickelt wurde. Es nutzt eine Kombination aus Tor-Multi-Hop-Routing und Hochgeschwindigkeits-Endpunkten.
+Torro ist ein modernes, standalone Privacy-Portal, das für maximale Anonymität und hohen Durchsatz entwickelt wurde.
 
-## 🚀 Wie lade ich das Projekt auf meinen PC?
+## 🚀 WICHTIG: VPN-Symbol in der Statusleiste (Android APK)
 
-Da du dich gerade in der Cloud-Umgebung befindest, ist der beste Weg über GitHub:
+Damit das **VPN-Symbol (Schlüssel)** in der Android-Statusleiste erscheint, musst du nach dem Download des Projekts (`git clone` oder ZIP) folgendes tun:
 
-1. **Terminal öffnen**: Klicke unten in Firebase Studio auf das **Terminal**.
-2. **Git Befehle eingeben**: Kopiere diese Zeilen und füge sie nacheinander ein:
+1. **Android Projekt initialisieren**:
    ```bash
-   git init
-   git add .
-   git commit -m "Initial commit: Torro Production Ready"
-   git branch -M main
-   git remote add origin https://github.com/joshyvodetaene/torro.git
-   git push -u origin main
+   npx cap add android
    ```
-3. **Download**: Gehe jetzt in deinem Browser auf `https://github.com/joshyvodetaene/torro`. Dort kannst du auf **Code > Download ZIP** klicken, um alles auf deinen Computer zu laden.
+2. **VpnService deklarieren**:
+   Öffne `android/app/src/main/AndroidManifest.xml` und füge innerhalb des `<application>` Tags folgendes hinzu:
+   ```xml
+   <service android:name=".MyVpnService"
+            android:permission="android.permission.BIND_VPN_SERVICE"
+            android:exported="false">
+       <intent-filter>
+           <action android:name="android.net.VpnService"/>
+       </intent-filter>
+   </service>
+   ```
+3. **Native Komponente**:
+   Du musst eine kleine Java-Klasse `MyVpnService.java` erstellen, die von `android.net.VpnService` erbt. Eine Vorlage findest du in der Android-Entwicklerdokumentation.
 
 ## 🛠️ Lokale Installation (nach dem Download)
-
-Wenn du das Projekt auf deinem Computer hast:
 
 1. Öffne ein Terminal im Ordner `torro`.
 2. Installiere die Abhängigkeiten:
@@ -31,22 +36,11 @@ Wenn du das Projekt auf deinem Computer hast:
    ```bash
    npm run dev
    ```
-4. Öffne `http://localhost:9002` in deinem Browser.
 
-## 📱 GitHub Actions (Automatische APK)
+## 📂 Wo finde ich was?
 
-Sobald du den Code zu GitHub gepusht hast (Schritt oben), passiert folgendes:
-- **Build**: GitHub baut automatisch deine APK. Du findest sie unter dem Tab **"Actions"** beim jeweiligen Build unter **"Artifacts"**.
-- **Release**: Wenn du ein Tag erstellst, wird ein offizieller Release erstellt:
-  ```bash
-  git tag v1.0.0
-  git push origin v1.0.0
-  ```
+- `src/ai/flows`: Die intelligente Tunnel-Konfiguration (Neural Engine).
+- `src/app/widget`: Die dedizierte Widget-Ansicht für den Startbildschirm.
+- `src/lib/services`: Der Background-Service für die System-Persistenz.
 
-## 📂 Wo finde ich was in Firebase Studio?
-
-- **Links**: Die Dateiliste (hier kannst du Dateien öffnen).
-- **Unten**: Das Terminal (für Git-Befehle).
-- **Mitte**: Der Code-Editor.
-
-Viel Erfolg mit Torro!
+Viel Erfolg mit Torro PRO!
