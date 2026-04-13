@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react";
@@ -6,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Shield, Power, Activity, Lock, Zap, ArrowDown, ArrowUp, Loader2, Cpu, ShieldCheck, ShieldAlert, Infinity } from "lucide-react";
+import { Shield, Power, Activity, Lock, Zap, ArrowDown, ArrowUp, Loader2, Cpu, ShieldCheck, ShieldAlert, Infinity, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VpnServer } from "@/lib/server-data";
 import { vpnBackgroundService } from "@/lib/services/vpn-background-service";
@@ -14,9 +15,11 @@ import { vpnBackgroundService } from "@/lib/services/vpn-background-service";
 interface ConnectionPanelProps {
   selectedServer: VpnServer | null;
   onStatusChange?: (status: "disconnected" | "connecting" | "connected") => void;
+  firewallActive?: boolean;
+  onFirewallChange?: (active: boolean) => void;
 }
 
-export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPanelProps) {
+export function ConnectionPanel({ selectedServer, onStatusChange, firewallActive = true, onFirewallChange }: ConnectionPanelProps) {
   const [status, setStatus] = useState<"disconnected" | "connecting" | "connected">("disconnected");
   const [fullTunnel, setFullTunnel] = useState(true);
   const [killSwitch, setKillSwitch] = useState(true);
@@ -76,8 +79,8 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
   useEffect(() => {
     let throughputInterval: any;
     if (status === "connected") {
-      const score = (fullTunnel ? 40 : 10) + (killSwitch ? 45 : 5) + 15;
-      setSecurityScore(score);
+      const score = (fullTunnel ? 30 : 5) + (killSwitch ? 30 : 5) + (firewallActive ? 30 : 5) + 10;
+      setSecurityScore(Math.min(score, 100));
       
       throughputInterval = setInterval(() => {
         setDownlink(Math.floor(Math.random() * 120) + 180);
@@ -85,7 +88,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
       }, 1000);
     }
     return () => clearInterval(throughputInterval);
-  }, [status, fullTunnel, killSwitch]);
+  }, [status, fullTunnel, killSwitch, firewallActive]);
 
   return (
     <Card className="glass-panel border-none shadow-2xl relative overflow-hidden neon-border">
@@ -158,14 +161,14 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
           <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 transition-all hover:bg-white/10 group">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-5 h-5" />
+                <Flame className="w-5 h-5" />
               </div>
               <div>
-                <Label htmlFor="full-tunnel" className="text-xs font-black block italic uppercase tracking-wider">System Layer Routing</Label>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-tighter">Affects whole device traffic</p>
+                <Label htmlFor="firewall-toggle" className="text-xs font-black block italic uppercase tracking-wider">Quantum Firewall</Label>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-tighter">Inbound Packet Filter</p>
               </div>
             </div>
-            <Switch id="full-tunnel" checked={fullTunnel} onCheckedChange={setFullTunnel} />
+            <Switch id="firewall-toggle" checked={firewallActive} onCheckedChange={onFirewallChange} />
           </div>
 
           <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 transition-all hover:bg-white/10 group">

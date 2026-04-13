@@ -13,11 +13,13 @@ import { TerminalLog } from "@/components/dashboard/TerminalLog";
 import { SecurityRules } from "@/components/dashboard/SecurityRules";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert, Terminal, Lock } from "lucide-react";
+import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert, Terminal, Lock, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 export default function Dashboard() {
   const [servers, setServers] = useState<VpnServer[]>(PRODUCTION_SERVERS);
@@ -25,7 +27,9 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'config' | 'network' | 'terminal' | 'rules'>('home');
   const [connectionStatus, setConnectionStatus] = useState<"disconnected" | "connecting" | "connected">("disconnected");
+  const [firewallActive, setFirewallActive] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const { toast } = useToast();
 
   const appIcon = PlaceHolderImages.find(img => img.id === 'app-icon');
 
@@ -44,6 +48,33 @@ export default function Dashboard() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Firewall Simulation: Incoming Requests
+  useEffect(() => {
+    if (connectionStatus !== 'connected' || !firewallActive) return;
+
+    const firewallInterval = setInterval(() => {
+      if (Math.random() > 0.7) {
+        const randomIp = `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+        const port = Math.floor(Math.random() * 65535);
+        
+        toast({
+          title: "Firewall: Zugriff blockiert",
+          description: `Eingehende Verbindung von ${randomIp} auf Port ${port} abgefangen.`,
+          variant: "destructive",
+          action: (
+            <ToastAction altText="Zulassen" onClick={() => {
+              toast({ title: "Regel aktualisiert", description: `Verbindung von ${randomIp} dauerhaft zugelassen.` });
+            }}>
+              Zulassen
+            </ToastAction>
+          ),
+        });
+      }
+    }, 15000);
+
+    return () => clearInterval(firewallInterval);
+  }, [connectionStatus, firewallActive, toast]);
 
   if (!mounted) return null;
 
@@ -176,6 +207,8 @@ export default function Dashboard() {
                     <ConnectionPanel 
                       selectedServer={selectedServer} 
                       onStatusChange={setConnectionStatus}
+                      firewallActive={firewallActive}
+                      onFirewallChange={setFirewallActive}
                     />
                   </div>
                   <div className="xl:col-span-8 space-y-6">
@@ -214,7 +247,7 @@ export default function Dashboard() {
 
               {activeTab === 'rules' && (
                 <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <SecurityRules />
+                  <SecurityRules firewallActive={firewallActive} onFirewallChange={setFirewallActive} />
                 </div>
               )}
 

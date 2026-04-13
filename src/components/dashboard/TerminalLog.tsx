@@ -1,14 +1,15 @@
+
 "use client"
 
 import { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Terminal, Shield, Cpu, Zap, Activity, Bug } from "lucide-react";
+import { Terminal, Shield, Cpu, Zap, Activity, Bug, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LogEntry {
   id: string;
   timestamp: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: 'info' | 'success' | 'warning' | 'error' | 'firewall';
   message: string;
   module: string;
 }
@@ -17,7 +18,7 @@ export function TerminalLog({ isActive }: { isActive: boolean }) {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const modules = ["CIPHER", "TUNNEL", "ROUTING", "HANDSHAKE", "KERNEL"];
+  const modules = ["CIPHER", "TUNNEL", "ROUTING", "HANDSHAKE", "KERNEL", "FIREWALL"];
   const messages = [
     "Handshake rotation sequence successful",
     "ChaCha20-Poly1305 stream established",
@@ -28,17 +29,23 @@ export function TerminalLog({ isActive }: { isActive: boolean }) {
     "Entropy re-seeded (Quantum-Safe source)",
     "Heartbeat ACK received from peer",
     "TUN0 interface buffer optimization active",
+    "FIREWALL: Blocked incoming packet from unauthorized IP",
+    "FIREWALL: Intercepted TCP SYN flood attempt",
   ];
 
   useEffect(() => {
     if (!isActive) return;
 
     const interval = setInterval(() => {
+      const typeChance = Math.random();
+      const type: LogEntry['type'] = typeChance > 0.8 ? 'firewall' : (typeChance > 0.1 ? 'success' : 'warning');
+      const module = type === 'firewall' ? 'FIREWALL' : modules[Math.floor(Math.random() * (modules.length - 1))];
+      
       const newLog: LogEntry = {
         id: Math.random().toString(36).substr(2, 9),
         timestamp: new Date().toLocaleTimeString('de-DE', { hour12: false, minute: '2-digit', second: '2-digit' }),
-        type: Math.random() > 0.05 ? 'success' : 'warning',
-        module: modules[Math.floor(Math.random() * modules.length)],
+        type,
+        module,
         message: messages[Math.floor(Math.random() * messages.length)],
       };
       
@@ -73,10 +80,16 @@ export function TerminalLog({ isActive }: { isActive: boolean }) {
             <div key={log.id} className="flex gap-4 animate-in fade-in slide-in-from-left-2 duration-400 group">
               <span className="text-muted-foreground/60 shrink-0 font-mono">[{log.timestamp}]</span>
               <span className={cn(
-                "font-black shrink-0 w-14 tracking-tighter uppercase",
-                log.type === 'success' ? "text-primary/90" : "text-primary/50"
-              )}>{log.module}</span>
-              <span className="text-white/80 group-hover:text-white transition-colors">{log.message}</span>
+                "font-black shrink-0 w-14 tracking-tighter uppercase flex items-center gap-1",
+                log.type === 'firewall' ? "text-primary" : (log.type === 'success' ? "text-primary/90" : "text-primary/50")
+              )}>
+                {log.type === 'firewall' && <Flame className="w-2.5 h-2.5" />}
+                {log.module}
+              </span>
+              <span className={cn(
+                "group-hover:text-white transition-colors",
+                log.type === 'firewall' ? "text-primary italic font-bold" : "text-white/80"
+              )}>{log.message}</span>
             </div>
           ))}
           <div ref={scrollRef} />
