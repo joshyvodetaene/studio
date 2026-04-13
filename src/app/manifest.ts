@@ -39,10 +39,10 @@ export default function manifest(): MetadataRoute.Manifest {
         icons: [{ src: appIcon, sizes: '192x192' }]
       },
       {
-        name: 'Node Status',
-        short_name: 'Status',
-        description: 'Netzwerk-Integrität prüfen',
-        url: '/',
+        name: 'Neural Widget',
+        short_name: 'Widget',
+        description: 'Öffne die Widget-Zentrale',
+        url: '/widget',
         icons: [{ src: appIcon, sizes: '192x192' }]
       }
     ],

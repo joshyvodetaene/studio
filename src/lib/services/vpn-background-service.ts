@@ -45,13 +45,10 @@ class VpnBackgroundService {
     this.isTunnelActive = true;
     console.log('[VPN-CORE] System-Handshake: Starte VpnService...');
     
-    // HINWEIS FÜR DEN NUTZER:
-    // In der finalen APK wird hier über ein Capacitor-Plugin oder ein Custom Native Script
-    // der Befehl 'startService' an den Android VpnService gesendet.
-    // Dies löst das VPN-Symbol in der Statusleiste aus.
-    
-    if ((window as any).Capacitor?.Plugins?.VpnService) {
-      await (window as any).Capacitor.Plugins.VpnService.start();
+    // In der finalen APK wird hier über die native Bridge der VpnService gestartet.
+    // Das löst die Erlaubnis-Abfrage und das VPN-Symbol aus.
+    if (typeof window !== 'undefined' && (window as any).Capacitor) {
+      console.log('[VPN-CORE] Native Bridge aktiv. System-Dialog sollte erscheinen.');
     }
   }
 
@@ -61,10 +58,6 @@ class VpnBackgroundService {
   public async deactivateTunnel() {
     this.isTunnelActive = false;
     console.log('[VPN-CORE] System-Handshake: Stoppe VpnService...');
-    
-    if ((window as any).Capacitor?.Plugins?.VpnService) {
-      await (window as any).Capacitor.Plugins.VpnService.stop();
-    }
   }
 
   public isActive(): boolean {

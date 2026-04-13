@@ -1,3 +1,4 @@
+
 name: Torro Android Build
 
 on:
@@ -37,41 +38,8 @@ jobs:
           npx cap add android || true
           npx cap sync android
           
-          # AUTOMATISIERUNG: Native VPN-Service Injection
-          echo "Injecting Native VpnService..."
-          PACKAGE_PATH="android/app/src/main/java/com/torro/pro"
-          mkdir -p $PACKAGE_PATH
-          
-          cat > $PACKAGE_PATH/MyVpnService.java <<EOF
-          package com.torro.pro;
-          import android.net.VpnService;
-          import android.content.Intent;
-          import android.os.ParcelFileDescriptor;
-
-          public class MyVpnService extends VpnService {
-              private ParcelFileDescriptor vpnInterface = null;
-              @Override
-              public int onStartCommand(Intent intent, int flags, int startId) {
-                  return START_STICKY;
-              }
-              @Override
-              public void onDestroy() {
-                  if (vpnInterface != null) {
-                      try { vpnInterface.close(); } catch (Exception e) {}
-                      vpnInterface = null;
-                  }
-                  super.onDestroy();
-              }
-          }
-          EOF
-
-          # Manifest Update
-          MANIFEST="android/app/src/main/AndroidManifest.xml"
-          # Check if service already exists to avoid duplicates
-          if ! grep -q "MyVpnService" "$MANIFEST"; then
-            sed -i '/<\/activity>/a \
-            <service android:name=".MyVpnService" android:permission="android.permission.BIND_VPN_SERVICE" android:exported="false"><intent-filter><action android:name="android.net.VpnService"\/><\/intent-filter><\/service>' "$MANIFEST"
-          fi
+          # AUTOMATISIERUNG: Native Bridge via Script
+          node scripts/prepare-native-vpn.js
 
           cd android
           chmod +x gradlew
