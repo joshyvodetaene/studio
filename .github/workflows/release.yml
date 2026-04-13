@@ -53,9 +53,10 @@ jobs:
           }
           EOF
           
-          if ! grep -q "MyVpnService" android/app/src/main/AndroidManifest.xml; then
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          if ! grep -q "MyVpnService" "$MANIFEST"; then
             sed -i '/<\/activity>/a \
-            <service android:name=".MyVpnService" android:permission="android.permission.BIND_VPN_SERVICE" android:exported="false"><intent-filter><action android:name="android.net.VpnService"\/><\/intent-filter><\/service>' android:app/src/main/AndroidManifest.xml
+            <service android:name=".MyVpnService" android:permission="android.permission.BIND_VPN_SERVICE" android:exported="false"><intent-filter><action android:name="android.net.VpnService"\/><\/intent-filter><\/service>' "$MANIFEST"
           fi
 
           cd android
