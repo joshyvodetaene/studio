@@ -1,9 +1,12 @@
 
 import { MetadataRoute } from 'next'
+import { PlaceHolderImages } from '@/lib/placeholder-images'
 
 export const dynamic = 'force-static'
 
 export default function manifest(): MetadataRoute.Manifest {
+  const appIcon = PlaceHolderImages.find(img => img.id === 'app-icon')?.imageUrl || 'https://picsum.photos/seed/torro-pro-icon/512/512';
+
   return {
     name: 'Torro — Secure Portal',
     short_name: 'Torro PRO',
@@ -15,13 +18,13 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#991b1b',
     icons: [
       {
-        src: 'https://picsum.photos/seed/torro-icon-pro/192/192',
+        src: appIcon,
         sizes: '192x192',
         type: 'image/png',
         purpose: 'maskable',
       },
       {
-        src: 'https://picsum.photos/seed/torro-icon-pro/512/512',
+        src: appIcon,
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',
@@ -33,14 +36,14 @@ export default function manifest(): MetadataRoute.Manifest {
         short_name: 'Connect',
         description: 'Sofortige Tunnel-Aktivierung',
         url: '/widget?action=connect',
-        icons: [{ src: 'https://picsum.photos/seed/torro-conn/192/192', sizes: '192x192' }]
+        icons: [{ src: appIcon, sizes: '192x192' }]
       },
       {
         name: 'Node Status',
         short_name: 'Status',
         description: 'Netzwerk-Integrität prüfen',
         url: '/',
-        icons: [{ src: 'https://picsum.photos/seed/torro-stat/192/192', sizes: '192x192' }]
+        icons: [{ src: appIcon, sizes: '192x192' }]
       }
     ],
     categories: ['utilities', 'security'],

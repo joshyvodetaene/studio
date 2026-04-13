@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react";
@@ -15,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert, Terminal, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 export default function Dashboard() {
   const [servers, setServers] = useState<VpnServer[]>(PRODUCTION_SERVERS);
@@ -23,6 +26,8 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'config' | 'network' | 'terminal' | 'rules'>('home');
   const [connectionStatus, setConnectionStatus] = useState<"disconnected" | "connecting" | "connected">("disconnected");
   const [mounted, setMounted] = useState(false);
+
+  const appIcon = PlaceHolderImages.find(img => img.id === 'app-icon');
 
   useEffect(() => {
     setMounted(true);
@@ -55,8 +60,15 @@ export default function Dashboard() {
 
       {/* Desktop Sidebar */}
       <aside className="w-20 hidden md:flex flex-col items-center py-8 border-r border-white/5 gap-8 bg-black/60 backdrop-blur-xl z-20">
-        <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 animate-pulse">
-          <Shield className="w-7 h-7" />
+        <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 animate-pulse relative overflow-hidden">
+          <Image 
+            src={appIcon?.imageUrl || ""} 
+            alt="Torro PRO" 
+            fill 
+            className="object-cover opacity-80"
+            data-ai-hint={appIcon?.imageHint}
+          />
+          <Shield className="w-7 h-7 relative z-10" />
         </div>
         
         <nav className="flex flex-col gap-5">
@@ -92,13 +104,25 @@ export default function Dashboard() {
 
       <main className="flex-1 flex flex-col h-full overflow-hidden pb-20 md:pb-0 z-10">
         <header className="px-6 py-4 flex items-center justify-between bg-black/40 backdrop-blur-md border-b border-white/5">
-          <div>
-            <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-primary">Torro <span className="text-white">PRO</span></h1>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", connectionStatus === 'connected' ? "bg-red-500 shadow-[0_0_8px_red]" : "bg-muted")} />
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                {connectionStatus === 'connected' ? "Dark-Web Backbone Live" : "Encryption Hub Ready"}
-              </p>
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-primary md:hidden flex items-center justify-center relative overflow-hidden">
+               <Image 
+                src={appIcon?.imageUrl || ""} 
+                alt="Torro PRO" 
+                fill 
+                className="object-cover opacity-60"
+                data-ai-hint={appIcon?.imageHint}
+              />
+              <Shield className="w-6 h-6 text-white relative z-10" />
+            </div>
+            <div>
+              <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-primary">Torro <span className="text-white">PRO</span></h1>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", connectionStatus === 'connected' ? "bg-red-500 shadow-[0_0_8px_red]" : "bg-muted")} />
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  {connectionStatus === 'connected' ? "Dark-Web Backbone Live" : "Encryption Hub Ready"}
+                </p>
+              </div>
             </div>
           </div>
           

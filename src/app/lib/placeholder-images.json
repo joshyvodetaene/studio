@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -17,6 +18,12 @@
       "description": "AI trace visualization",
       "imageUrl": "https://picsum.photos/seed/torro-wine-3/600/400",
       "imageHint": "cyber security"
+    },
+    {
+      "id": "app-icon",
+      "description": "Torro PRO Wine Red Shield Icon",
+      "imageUrl": "https://picsum.photos/seed/torro-pro-icon/512/512",
+      "imageHint": "security shield"
     }
   ]
 }
