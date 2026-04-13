@@ -61,13 +61,15 @@ export default function Dashboard() {
       {/* Desktop Sidebar */}
       <aside className="w-20 hidden md:flex flex-col items-center py-8 border-r border-white/5 gap-8 bg-black/60 backdrop-blur-xl z-20">
         <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 animate-pulse relative overflow-hidden">
-          <Image 
-            src={appIcon?.imageUrl || ""} 
-            alt="Torro PRO" 
-            fill 
-            className="object-cover opacity-80"
-            data-ai-hint={appIcon?.imageHint}
-          />
+          {appIcon?.imageUrl && (
+            <Image 
+              src={appIcon.imageUrl} 
+              alt="Torro PRO" 
+              fill 
+              className="object-cover opacity-80"
+              data-ai-hint={appIcon.imageHint}
+            />
+          )}
           <Shield className="w-7 h-7 relative z-10" />
         </div>
         
@@ -106,19 +108,21 @@ export default function Dashboard() {
         <header className="px-6 py-4 flex items-center justify-between bg-black/40 backdrop-blur-md border-b border-white/5">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-primary md:hidden flex items-center justify-center relative overflow-hidden">
-               <Image 
-                src={appIcon?.imageUrl || ""} 
-                alt="Torro PRO" 
-                fill 
-                className="object-cover opacity-60"
-                data-ai-hint={appIcon?.imageHint}
-              />
+               {appIcon?.imageUrl && (
+                <Image 
+                  src={appIcon.imageUrl} 
+                  alt="Torro PRO" 
+                  fill 
+                  className="object-cover opacity-60"
+                  data-ai-hint={appIcon.imageHint}
+                />
+              )}
               <Shield className="w-6 h-6 text-white relative z-10" />
             </div>
             <div>
               <h1 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-primary">Torro <span className="text-white">PRO</span></h1>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", connectionStatus === 'connected' ? "bg-red-500 shadow-[0_0_8px_red]" : "bg-muted")} />
+                <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", connectionStatus === 'connected' ? "bg-primary shadow-[0_0_8px_rgba(153,27,27,0.8)]" : "bg-muted")} />
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                   {connectionStatus === 'connected' ? "Dark-Web Backbone Live" : "Encryption Hub Ready"}
                 </p>
@@ -140,7 +144,7 @@ export default function Dashboard() {
             <div className={cn(
               "flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all duration-500 group relative",
               connectionStatus === 'connected' 
-                ? "bg-primary/10 border-primary/40 text-primary shadow-[0_0_25px_rgba(220,20,60,0.3)]" 
+                ? "bg-primary/10 border-primary/40 text-primary shadow-[0_0_25px_rgba(153,27,27,0.3)]" 
                 : "bg-white/5 border-white/10 text-muted-foreground"
             )}>
               <div className={cn(

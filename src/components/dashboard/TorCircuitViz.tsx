@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react";
@@ -116,13 +117,15 @@ export function TorCircuitViz() {
         ) : (
           <div className="space-y-4 animate-in fade-in zoom-in-95 duration-500 relative">
             <div className="relative h-24 w-full rounded-xl overflow-hidden border border-primary/20">
-              <Image 
-                src={traceImg?.imageUrl || ""} 
-                alt="Trace Visualization" 
-                fill 
-                className="object-cover opacity-60" 
-                data-ai-hint={traceImg?.imageHint} 
-              />
+              {traceImg?.imageUrl && (
+                <Image 
+                  src={traceImg.imageUrl} 
+                  alt="Trace Visualization" 
+                  fill 
+                  className="object-cover opacity-60" 
+                  data-ai-hint={traceImg.imageHint} 
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
               <div className="absolute bottom-2 left-3 flex items-center gap-1.5">
                 <ShieldCheck className="w-3 h-3 text-primary" />
