@@ -11,9 +11,10 @@ import { ConfigTool } from "@/components/dashboard/ConfigTool";
 import { NetworkInterfaceDetails } from "@/components/dashboard/NetworkInterfaceDetails";
 import { TerminalLog } from "@/components/dashboard/TerminalLog";
 import { SecurityRules } from "@/components/dashboard/SecurityRules";
+import { FirewallPanel } from "@/components/dashboard/FirewallPanel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert, Terminal, Lock, Flame, BrainCircuit } from "lucide-react";
+import { Shield, Search, Settings, LogOut, User, LayoutDashboard, Globe, Activity, Network, ShieldCheck, ShieldAlert, Terminal, Lock, Flame, BrainCircuit, ShieldEllipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -25,7 +26,7 @@ export default function Dashboard() {
   const [servers, setServers] = useState<VpnServer[]>(PRODUCTION_SERVERS);
   const [selectedServer, setSelectedServer] = useState<VpnServer | null>(PRODUCTION_SERVERS[0]);
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'config' | 'network' | 'terminal' | 'rules'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'servers' | 'firewall' | 'rules' | 'network' | 'terminal' | 'config'>('home');
   const [connectionStatus, setConnectionStatus] = useState<"disconnected" | "connecting" | "connected">("disconnected");
   const [firewallActive, setFirewallActive] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -54,7 +55,7 @@ export default function Dashboard() {
     if (connectionStatus !== 'connected' || !firewallActive) return;
 
     const firewallInterval = setInterval(() => {
-      if (Math.random() > 0.8) {
+      if (Math.random() > 0.85) {
         const randomIp = `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
         const port = Math.floor(Math.random() * 65535);
         const appGuess = port === 443 ? "Web Service" : port === 10000 ? "Signal-VoIP" : "Unknown Binary";
@@ -88,7 +89,7 @@ export default function Dashboard() {
           ),
         });
       }
-    }, 20000);
+    }, 15000);
 
     return () => clearInterval(firewallInterval);
   }, [connectionStatus, firewallActive, toast]);
@@ -125,6 +126,7 @@ export default function Dashboard() {
           {[
             { id: 'home', icon: LayoutDashboard },
             { id: 'servers', icon: Globe },
+            { id: 'firewall', icon: ShieldEllipsis },
             { id: 'rules', icon: Lock },
             { id: 'network', icon: Network },
             { id: 'terminal', icon: Terminal },
@@ -262,9 +264,15 @@ export default function Dashboard() {
                 </div>
               )}
 
+              {activeTab === 'firewall' && (
+                <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <FirewallPanel firewallActive={firewallActive} onFirewallChange={setFirewallActive} />
+                </div>
+              )}
+
               {activeTab === 'rules' && (
                 <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <SecurityRules firewallActive={firewallActive} onFirewallChange={setFirewallActive} />
+                  <SecurityRules />
                 </div>
               )}
 
@@ -295,8 +303,8 @@ export default function Dashboard() {
         {[
           { id: 'home', icon: LayoutDashboard, label: 'Dash' },
           { id: 'servers', icon: Globe, label: 'Nodes' },
-          { id: 'rules', icon: Lock, label: 'Rules' },
-          { id: 'network', icon: Network, label: 'Net' },
+          { id: 'firewall', icon: ShieldEllipsis, label: 'Fire' },
+          { id: 'rules', icon: Lock, label: 'Onion' },
           { id: 'terminal', icon: Terminal, label: 'Log' },
         ].map((item) => (
           <Button 
