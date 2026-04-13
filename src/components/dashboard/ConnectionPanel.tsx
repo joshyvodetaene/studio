@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react";
@@ -25,6 +26,15 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
   const [uplink, setUplink] = useState(0);
   const [securityScore, setSecurityScore] = useState(0);
   
+  // Sync status on mount
+  useEffect(() => {
+    if (vpnBackgroundService.isActive()) {
+      setStatus("connected");
+      setProgress(100);
+      if (onStatusChange) onStatusChange("connected");
+    }
+  }, []);
+
   const handleToggle = async () => {
     if (status === "disconnected") {
       setStatus("connecting");
@@ -32,11 +42,11 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
       await vpnBackgroundService.activateTunnel();
     } else {
       setStatus("disconnected");
-      if (onStatusChange) onStatusChange("disconnected");
       setProgress(0);
       setDownlink(0);
       setUplink(0);
       setSecurityScore(0);
+      if (onStatusChange) onStatusChange("disconnected");
       await vpnBackgroundService.deactivateTunnel();
     }
   };
@@ -47,9 +57,13 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
       interval = setInterval(() => {
         setProgress(prev => {
           const next = prev + 10;
-          return next > 100 ? 100 : next;
+          if (next >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          return next;
         });
-      }, 100);
+      }, 150);
     }
     return () => clearInterval(interval);
   }, [status]);
@@ -59,7 +73,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
       setStatus("connected");
       if (onStatusChange) onStatusChange("connected");
     }
-  }, [progress, status, onStatusChange]);
+  }, [progress, status]);
 
   useEffect(() => {
     let throughputInterval: any;
@@ -79,7 +93,7 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
     <Card className="glass-panel border-none shadow-2xl relative overflow-hidden neon-border">
       <div className={cn(
         "absolute top-0 left-0 h-1 bg-primary transition-all duration-300",
-        status === "connected" ? "w-full opacity-100 shadow-[0_0_15px_rgba(220,20,60,0.8)]" : status === "connecting" ? "opacity-100" : "w-0 opacity-0"
+        status === "connected" ? "w-full opacity-100 shadow-[0_0_15px_rgba(153,27,27,0.8)]" : status === "connecting" ? "opacity-100" : "w-0 opacity-0"
       )} style={{ width: `${progress}%` }} />
       
       <CardHeader className="pb-2">
@@ -107,12 +121,12 @@ export function ConnectionPanel({ selectedServer, onStatusChange }: ConnectionPa
             
             <div className={cn(
               "relative z-10 w-48 h-48 rounded-full flex items-center justify-center transition-all duration-700 transform active:scale-95 border-[16px] shadow-2xl",
-              status === "connected" ? "bg-primary border-primary/20 text-white shadow-[0_0_50px_rgba(220,20,60,0.6)]" : 
+              status === "connected" ? "bg-primary border-primary/20 text-white shadow-[0_0_50px_rgba(153,27,27,0.6)]" : 
               status === "connecting" ? "bg-secondary border-primary/40 text-primary" : 
               "bg-secondary/40 border-white/5 text-muted-foreground hover:border-white/10"
             )}>
               {status === "connecting" ? (
-                <Loader2 className="w-24 h-24 animate-spin" />
+                <Loader2 className="w-24 h-24 animate-spin text-primary" />
               ) : (
                 <Power className={cn("w-24 h-24 transition-transform duration-700", status === "connected" && "rotate-180")} />
               )}

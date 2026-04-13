@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Torro',
+    title: 'Torro PRO',
   },
   formatDetection: {
     telephone: false,
@@ -39,7 +39,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        {/* Android VPN Service Icon wird vom OS gesteuert, Theme-Color optimiert für Stealth-Look */}
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="font-body antialiased bg-background text-foreground min-h-screen select-none overflow-hidden touch-none">
         {children}
